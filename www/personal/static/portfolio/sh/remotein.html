@@ -1,0 +1,17 @@
+<pre id="code">
+#!/bin/bash
+#
+# Script: remotein
+# Author: Stronz
+# Date  : Dec 2014
+#
+# Platform: Crouton
+#
+# Purpose: connects usings ssh and xtightvncviewer
+#
+################################################################################
+#	BEGINNING OF MAIN
+################################################################################
+archieIP=$(netstat -rn | awk '/^[0-9][0-9]+..*/ {print $1}' | sed 's/\(.*\.\)[0-9].*$/\1/' | awk '{print $1&quot;100&quot;}')
+xterm -e &quot;ssh -X -i ~/.ssh/id_rsa -p 8621 $archieIP -l archie -L 5900:localhost:5900 x11vnc -scale 1536x864 -display :0 -noxdamage &amp; (sleep 15s; xtightvncviewer -encodings hextile -compresslevel 1 -depth 8 localhost:5900)&quot;
+</pre>

@@ -1,0 +1,126 @@
+<pre id="code">
+/**
+ * Description:
+ *  Create deck of cards, shuffle them and print them.
+ *
+ * Completion time:
+ *  As long as it takes.
+ *
+ * @author Jim Stronz
+ * @version 1.0
+ */
+
+import java.util.*;
+public class CardDeck {
+
+    private static final Map&lt;String, String&gt; PrettifyMap;
+    static {
+        PrettifyMap = new HashMap&lt;&gt;();
+        PrettifyMap.put(&quot;TWO&quot;, &quot;2&quot;);
+        PrettifyMap.put(&quot;THREE&quot;, &quot;3&quot;);
+        PrettifyMap.put(&quot;FOUR&quot;, &quot;4&quot;);
+        PrettifyMap.put(&quot;FIVE&quot;, &quot;5&quot;);
+        PrettifyMap.put(&quot;SIX&quot;, &quot;6&quot;);
+        PrettifyMap.put(&quot;SEVEN&quot;, &quot;7&quot;);
+        PrettifyMap.put(&quot;EIGHT&quot;, &quot;8&quot;);
+        PrettifyMap.put(&quot;NINE&quot;, &quot;9&quot;);
+        PrettifyMap.put(&quot;TEN&quot;, &quot;10&quot;);
+        PrettifyMap.put(&quot;JACK&quot;, &quot;Jack&quot;);
+        PrettifyMap.put(&quot;QUEEN&quot;, &quot;Queen&quot;);
+        PrettifyMap.put(&quot;KING&quot;, &quot;King&quot;);
+        PrettifyMap.put(&quot;ACE&quot;, &quot;Ace&quot;);
+        PrettifyMap.put(&quot;HEART&quot;, &quot;Hearts&quot;);
+        PrettifyMap.put(&quot;SPADE&quot;, &quot;Spades&quot;);
+        PrettifyMap.put(&quot;CLUB&quot;, &quot;Clubs&quot;);
+        PrettifyMap.put(&quot;DIAMOND&quot;, &quot;Diamonds&quot;);
+    }
+
+    public static void main (String[] args) {
+        int count = 0;
+        ArrayList&lt;Card&gt; fiftyTwoCards = new ArrayList&lt;Card&gt;();
+        for (int i = 0; i &lt; 13; i++) {
+            FaceValue faceValue = FaceValue.values()[i];
+            for (int j = 0; j &lt; 4; j++) {
+                count += 1;
+                Card card = new Card( faceValue, Suit.values()[j] );
+                fiftyTwoCards.add(card);
+            }
+        }
+
+        Collections.shuffle(fiftyTwoCards);
+        for (Iterator&lt;Card&gt; cardsIter = fiftyTwoCards.iterator(); cardsIter.hasNext(); ) {
+            System.out.format(&quot;Cards remaining: %d\n&quot;, count);
+            count -= 1;
+            Card currentCard = cardsIter.next();
+            String faceValue = PrettifyMap.get(currentCard.getFaceValue().toString());
+            String suit = PrettifyMap.get(currentCard.getSuit().toString());
+            System.out.println( faceValue + &quot; of &quot; + suit );
+        }
+    }
+}
+
+class Card {
+    private Suit suit;
+    private FaceValue faceValue;
+
+    public Card( FaceValue faceValue, Suit suit) {
+        this.faceValue = faceValue;
+        this.suit = suit;
+    }
+    public Suit getSuit() {
+        return suit;
+    }
+    public FaceValue getFaceValue() {
+        return faceValue;
+    }
+    public void setSuit(Suit suit) {
+        this.suit = suit;
+    }
+    public void setFaceValue(FaceValue faceValue) {
+       this.faceValue = faceValue;
+    }
+}
+
+enum FaceValue {
+    TWO(&quot;TWO&quot;),
+    THREE(&quot;THREE&quot;),
+    FOUR(&quot;FOUR&quot;),
+    FIVE(&quot;FIVE&quot;),
+    SIX(&quot;SIX&quot;),
+    SEVEN(&quot;SEVEN&quot;),
+    EIGHT(&quot;EIGHT&quot;),
+    NINE(&quot;NINE&quot;),
+    TEN(&quot;TEN&quot;),
+    JACK(&quot;JACK&quot;),
+    QUEEN(&quot;QUEEN&quot;),
+    KING(&quot;KING&quot;),
+    ACE(&quot;ACE&quot;);
+
+    private String faceValue;
+
+    private FaceValue( String faceValue ) {
+        this.faceValue = faceValue;
+    }
+    public String toString() {
+        return this.faceValue;
+    }
+
+}
+
+enum Suit {
+    HEART(&quot;HEART&quot;),
+    SPADE(&quot;SPADE&quot;),
+    CLUB(&quot;CLUB&quot;),
+    DIAMOND(&quot;DIAMOND&quot;);
+
+    private String suit;
+
+    private Suit( String suit ) {
+        this.suit = suit;
+    }
+    public String toString() {
+        return this.suit;
+    }
+}</pre>
+
+

@@ -1,0 +1,114 @@
+/*
+ *    dtStyler
+ */                        
+.dtStyler .active {
+  color: #03a9f4;
+}
+.dtStyler,
+.dtStyler ul,
+.dtStyler li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+#portfolio-content-div0 {
+  background-color: transparent;
+}
+#portfolio-content-div0 .pull-left {
+  background-color: #323232;
+}
+@-webkit-keyframes fadeIn {
+    from { opacity: 0; }
+      to { opacity: 1; }
+}  
+@keyframes fadeIn {
+    from { opacity: 0; }
+      to { opacity: 1; }
+}
+#portfolio-content {visibility: hidden;}
+.dtStyler ul{overflow: hidden;}
+//.dtStyler ul.collapsed{visibility: hidden;}
+//.dtStyler ul.expanded{display: block;}
+
+.dtStyler a {
+  cursor: pointer;
+  top-padding: 1em;
+  bottom-padding: 1em;
+  display: inline-block;
+  
+}
+//.dtStyler ul {
+//  display: none;
+//}
+.dtStyler li {
+  line-height: 1em;
+  margin-top: 1px;
+  background: transparent;
+  position: relative;
+  width: 100%;
+}
+/* IE leaves a blank space where span is added so this is to avoid that */
+* html .dtStyler li {
+  float: left;
+  display: inline;
+}
+/*#setter{padding-right:0px; cursor: pointer; background-color: #2F3742;}*/
+.dtStyler li a {
+  padding-top: 0.46666em;
+  padding-bottom: 0.46666em;
+  padding-left: 28px;
+  padding-right: 0px;
+  color: #ffffff;
+  font-size: 1.5em;
+  line-height: 1em;
+}
+.dtStyler li a:hover {
+  color: #03a9f4;
+  text-decoration: none;
+}
+.dtStyler li canvas {
+  float: left;
+  position: absolute;
+  top: 8px;
+  left: 5px;
+  width: 13px;
+  height: 13px;
+  cursor: auto;
+  font-size: 0;
+  line-height: 3em;
+}
+.dtStyler li canvas,
+.dtStyler li canvas.collapsed {
+  cursor: pointer;
+}
+.dtStyler li canvas.expanded {
+  cursor: pointer;
+}
+/* second level */
+.dtStyler li li {
+  background-color: #464646;
+}
+.dtStyler li li a {
+  padding-top: 7px;
+  padding-bottom: 7px;
+  padding-left: 56px;
+  padding-right: 0px;
+}
+.dtStyler li li canvas {
+  left: 28px;
+  cursor: pointer;
+}
+/* third level */
+.dtStyler li li li {
+  background-color: #5a5a5a;
+}
+.dtStyler li li li a {
+  padding-top: 7px;
+  padding-bottom: 7px;
+  padding-left: 84px;
+  padding-right: 0px;
+}
+.dtStyler li li li canvas {
+  left: 56px;
+}
+/* etc. */

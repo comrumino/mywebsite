@@ -1,0 +1,169 @@
+<pre id="code">
+#!/bin/bash
+#
+# Script: iptables
+# Author: Stronz
+# Date  : Jan 2016
+#
+# Platform: Arch Linux and other linux distro's that abide by the same folder structure
+#          Two network interfaces
+#          xVNC11
+#          Internet sharing (Disabled)
+#
+# Purpose: to reduce the amount of typing I have to do when setting up iptables
+#
+################################################################################
+#	NOTES
+################################################################################
+# Safety Check List
+#   Variable values are correct []
+#   Make backups of 
+#       /etc/rc.conf []
+#       /etc/dnsmasq.conf []
+#   findNICMAC parses correctly []
+#   LANNICMAC can also be set manually under variables	
+#
+#   These iptable rules aren't perfect, but provide a solid base
+#
+################################################################################
+#	PACKAGE PREREQUISITES HERE
+################################################################################
+# pacman -S iptables dnsmasq
+#
+################################################################################
+#	VARIABLES HERE
+################################################################################
+LAN=&quot;eno1&quot;          #Local area network interface
+LANNICMAC=''          #NIC MAC for LAN
+
+LRIP='192.168.0.0'          #LAN, router IP          (LRIP)    
+LHIP='192.168.0.1'          #LAN, host   IP range at (LHIP)
+WHIP='192.168.1.1'          #WAN, host   IP range at (WHIP)
+LEIP='192.168.0.255'          #LAN, end    IP range at (LEIP)
+
+WAN=&quot;enp3s0&quot;          #Wider area network interface
+RCCONF='/etc/rc.conf'          #Ethernet IP configuration (file)
+DMCONF='/etc/dnsmasq.conf'          #Configuration for dnsmasq (file)
+################################################################################
+#	FUNCTIONS HERE
+################################################################################
+findNICMAC () {
+  LANNICMAC=$(ip a | awk &quot;found {print \$2; exit;} /${LAN}/ {found=1};&quot;)
+}
+
+rcConf () {
+  touch ${RCCONF}
+  echo &quot;${WAN}=\&quot;dhcp\&quot;&quot; &gt; ${RCCONF}
+  echo &quot;${LAN}=\&quot;${LAN} ${LRIP} netmask 255.255.255.0 broadcast ${LEIP}\&quot;&quot; &gt;&gt; ${RCCONF}
+  echo &quot;INTERFACES=(${WAN} ${LAN})&quot; &gt;&gt; ${RCCONF}
+}
+
+dmConf () {
+  touch ${DMCONF}
+  echo &quot;interface=${LAN}&quot; &gt; ${DMCONF}
+  echo &quot;bind-interfaces&quot; &gt;&gt; ${DMCONF}
+  echo &quot;dhcp-range=${LHIP},${LEIP},12h&quot; &gt;&gt; ${DMCONF}
+  echo &quot;dhcp-host=${LANNICMAC},${LHIP}&quot; &gt;&gt; ${DMCONF}
+}
+
+flushTables () {
+  iptables -F
+  iptables -X
+  iptables -t nat -F
+  iptables -t nat -X
+  iptables -t mangle -F
+  iptables -t mangle -X
+  iptables -t raw -F
+  iptables -t raw -X
+  iptables -t security -F
+  iptables -t security -X
+  iptables -P INPUT ACCEPT
+  iptables -P FORWARD ACCEPT
+  iptables -P OUTPUT ACCEPT
+}
+
+declareChains () {
+  iptables -N TCP
+  iptables -N UDP
+}
+
+forwardIPV4 () {
+  echo 1 &gt; /proc/sys/net/ipv4/ip_forward
+  touch /etc/sysctl.d/40-ip-forward.conf
+  echo &quot;net.ipv4.ip_forward=1&quot; &gt; /etc/sysctl.d/40-ip-forward.conf
+}
+
+inetSharing () {
+  #ip link set up dev ${LAN}
+  #ip addr add ${LHIP}00/24 dev ${LAN}	
+  iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+  iptables -A INPUT -m state --state NEW -i ${LAN} -j ACCEPT
+  iptables -A FORWARD -i ${WAN} -o ${LAN} -m state --state ESTABLISHED,RELATED -j ACCEPT
+  iptables -A FORWARD -i ${LAN} -o ${WAN} -j ACCEPT
+  iptables -t nat -A POSTROUTING -o ${WAN} -j MASQUERADE
+  iptables -A FORWARD -i ${WAN} -o ${WAN} -j REJECT
+}
+
+xVNC11 () {
+  iptables -I INPUT -i ${WAN} -p tcp --dport 5900 -j ACCEPT #-s ${WHIP}00 
+  iptables -I INPUT -i ${WAN} -p udp --dport 5900 -j ACCEPT #-s ${WHIP}00  
+  iptables -I INPUT -i ${WAN} -p tcp --dport 8621 -j ACCEPT #-s ${WHIP}00 
+  iptables -I INPUT -i ${WAN} -p udp --dport 8621 -j ACCEPT #-s ${WHIP}00 
+}
+
+ssFirewall () {
+  iptables -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+  iptables -A INPUT -m conntrack --ctstate INVALID -j DROP
+  iptables -A INPUT -p icmp --icmp-type 8 -m conntrack --ctstate NEW -j ACCEPT
+  iptables -A INPUT -i ${WAN} -p udp -m conntrack --ctstate NEW -j UDP
+  iptables -A INPUT -i ${WAN} -p tcp --syn -m conntrack --ctstate NEW -j TCP
+  iptables -A INPUT -i ${WAN} -p udp -j REJECT --reject-with icmp-port-unreachable
+  iptables -A INPUT -i ${WAN} -p tcp -j REJECT --reject-with tcp-rst
+  iptables -A INPUT -i ${WAN} -p udp -j REJECT --reject-with icmp-proto-unreachable
+  iptables -A INPUT -i ${WAN} -p udp -j REJECT --reject-with icmp-port-unreachable
+  iptables -A INPUT -i ${WAN} -p tcp -j REJECT --reject-with tcp-rst
+  iptables -A INPUT -i ${WAN} -j REJECT --reject-with icmp-proto-unreachable
+  iptables -A INPUT -i ${WAN} -p icmp --icmp-type echo-request -m limit --limit 30/min --limit-burst 8 -j ACCEPT
+  iptables -A INPUT -i ${WAN} -p icmp --icmp-type echo-request -j DROP
+  iptables -A INPUT -i ${WAN} -p icmp --icmp-type echo-request -m limit --limit 30/min --limit-burst 8 -j ACCEPT
+  iptables -A INPUT -i ${WAN} -p icmp --icmp-type echo-request -j DROP
+  iptables -I TCP -i ${WAN} -p tcp -m recent --update --seconds 60 --name TCP-PORTSCAN -j REJECT --reject-with tcp-rst
+  iptables -D INPUT -i ${WAN} -p tcp -j REJECT --reject-with tcp-rst
+  iptables -A INPUT -i ${WAN} -p tcp -m recent --set --name TCP-PORTSCAN -j REJECT --reject-with tcp-rst
+  iptables -I TCP -i ${WAN} -p tcp -m recent --update --seconds 60 --name TCP-PORTSCAN -j REJECT --reject-with tcp-rst
+  iptables -D INPUT -i ${WAN} -p tcp -j REJECT --reject-with tcp-rst
+  iptables -A INPUT -i ${WAN} -p tcp -m recent --set --name TCP-PORTSCAN -j REJECT --reject-with tcp-rst
+  iptables -I UDP -i ${WAN} -p udp -m recent --update --seconds 60 --name UDP-PORTSCAN -j REJECT --reject-with icmp-port-unreachable
+  iptables -D INPUT -i ${WAN} -p udp -j REJECT --reject-with icmp-port-unreachable
+  iptables -A INPUT -i ${WAN} -p udp -m recent --set --name UDP-PORTSCAN -j REJECT --reject-with icmp-port-unreachable
+  iptables -D INPUT -i ${WAN} -j REJECT --reject-with icmp-proto-unreachable
+  iptables -A INPUT -i ${WAN} -j REJECT --reject-with icmp-proto-unreachable
+}
+
+saveTables () {
+  iptables-save &gt; /etc/iptables/iptables.rules
+}
+
+disableIPV6 () {
+  echo &quot;net.ipv6.conf.all.disable_ipv6 = 1&quot; &gt; /etc/sysctl.d/40-ipv6
+  echo &quot;net.ipv6.conf.eno1.disable_ipv6 = 1&quot; &gt;&gt; /etc/sysctl.d/40-ipv6
+  echo &quot;net.ipv6.conf.enp3s0.disable_ipv6 = 1&quot; &gt;&gt; /etc/sysctl.d/40-ipv6
+}
+
+################################################################################
+#	BEGINNING OF MAIN
+################################################################################
+#findNICMAC
+#rcConf 
+#dmConf
+flushTables
+declareChains
+#forwardIPV4
+#inetSharing
+ssFirewall
+xVNC11
+#disableIPV6
+saveTables
+systemctl reload iptables
+####### Yay! There is nothing more to do! #######
+</pre>

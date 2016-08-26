@@ -1,0 +1,70 @@
+<pre id="code">
+//Context: Windows API, vc120, extern &quot;C&quot;
+//
+//Inputs: 
+//toggle_pid, array of two pids to resume/suspend threads for
+//toggleThread, whether or not to resume or suspend thread
+//procName, the process name that BOTH toggle_pids belong to
+void toggle_threads(DWORD(&amp;toggle_pid)[2], BOOL toggleThread, const char * procName) {
+  HANDLE hSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD | TH32CS_SNAPPROCESS, NULL);
+  THREADENTRY32 tEntry = { sizeof(tEntry) };
+  PROCESSENTRY32 pEntry;
+  pEntry.dwSize = sizeof(pEntry);
+  BOOL hProc = Thread32First(hSnapShot, &amp;tEntry);
+  BOOL hThread = Process32First(hSnapShot, &amp;pEntry);
+
+  HANDLE threads[4];
+  int pt = 0;
+
+  int i = 0;
+  for (; hProc; hProc = Process32Next(hSnapShot, &amp;pEntry)) {
+    hThread = Thread32Next(hSnapShot, &amp;tEntry);
+    if (strcmp(pEntry.szExeFile, procName) == 0) {
+      HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, (DWORD)pEntry.th32ProcessID);
+      WaitForSingleObject(hProcess, 107);
+      if (hProcess != NULL) {
+        if (pEntry.th32ProcessID != toggle_pid[0])
+          toggle_pid[0] = pEntry.th32ProcessID;
+        if (i == 1) {
+          toggle_pid[1] = pEntry.th32ProcessID;
+          CloseHandle(hProcess);
+          for (; hThread; hThread = Thread32Next(hSnapShot, &amp;tEntry)) {
+            if (tEntry.th32OwnerProcessID == toggle_pid[0] || tEntry.th32OwnerProcessID == toggle_pid[1]) {
+              HANDLE hThread = OpenThread(THREAD_SUSPEND_RESUME, FALSE, tEntry.th32OwnerProcessID);
+              WaitForSingleObject(hThread, 107);
+              if (hThread != NULL) {
+                threads[pt] = hThread;
+                pt++;
+              }
+            }
+            else {
+              printf(&quot;Failed thread owner sanity check.&quot;);
+            }
+          }
+        }
+        CloseHandle(hProcess);
+        i++;
+      }
+    }
+  }
+  CloseHandle(hSnapShot);
+  if (toggleThread){
+    for (int c = pt; c &gt; 0; c--) {
+      int ret = ResumeThread(threads[c]);
+      if (ret == -1) {
+        printf(&quot;Failed to toggle thread state: (%d)&quot;, GetLastError());
+      }
+      CloseHandle(threads[c]);
+    }
+  }
+  else {
+    for (int c = pt; c &gt; 0; c--) {
+      int ret = SuspendThread(threads[c]);
+      if (ret == -1) {
+        printf(&quot;Failed to toggle thread state: (%d)&quot;, GetLastError());
+      }
+      CloseHandle(threads[c]);
+    }
+  }
+}
+</pre>

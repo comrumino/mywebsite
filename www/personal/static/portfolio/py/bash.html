@@ -1,0 +1,45 @@
+<pre id="code">
+from os import system, execl, _exit
+import sys, subprocess
+import constants
+
+class Bash:
+    @staticmethod
+    def cat_data_file():
+        subshell = str(&quot;(osascript -e &quot;+\
+                       &quot;\'tell application \&quot;Terminal\&quot; to activate\' -e \'tell &quot;+\
+                       &quot;application \&quot;System Events\&quot; to tell process \&quot;Terminal\&quot;&quot;+\
+                       &quot; to keystroke \&quot;t\&quot; using command down\' -e \'tell &quot;+\
+                       &quot;application \&quot;Terminal\&quot; to do script \&quot;&quot;+\
+                       &quot;cat &quot;+constants.PYDIR+&quot;data_file.csv\&quot; &quot;+\
+                       &quot;in selected tab of the front window\')&quot;)
+        system(subshell)
+
+    @staticmethod
+    def cp(source_file, target_file):
+        subshell = str(&quot;(cp &quot;+source_file+&quot; &quot;+target_file+&quot;)&quot;)
+        system(subshell)
+
+    @staticmethod
+    def fix_routes():
+        SHFILE = constants.SHDIR + 'fixRoutes.sh'
+        proc = subprocess.Popen(str(SHFILE), shell=True,
+                                             stdout=subprocess.PIPE,
+                                             stdin=subprocess.PIPE,
+                                             stderr=subprocess.PIPE)
+        proc.wait()
+
+    @staticmethod
+    def restart_script():
+        print 'Restarting console.py  ...'
+        python = sys.executable
+        execl(python, python, * sys.argv)
+
+    @staticmethod
+    def save_to_ui(exploit_state, script_state):
+        SHFILE = 'sh/sedChanges.sh'
+        PYTARG = 'modules/ui.py'
+        subshell = str(&quot;(&quot;+constants.PYDIR+SHFILE+&quot; &quot;+constants.PYDIR+PYTARG+\
+                   &quot; &quot;+exploit_state+&quot; &quot;+&quot;[\'&quot;+'\',\''.join(map(str, script_state))+&quot;\']&quot;+&quot;)&quot;)
+        system(subshell)
+</pre>

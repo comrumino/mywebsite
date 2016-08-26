@@ -1,0 +1,59 @@
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+menu,
+nav,
+section,
+summary {
+  display: block;
+}
+
+a {
+  background-color: transparent;
+}
+
+a:active,
+a:hover {
+  outline: 0;
+  cursor: pointer;
+}
+
+a#home.active {color:#03a9f4}
+a#home { outline-width: 0px !important; }
+
+
+svg:not(:root) {
+  overflow: hidden;
+}
+
+
+
+figure {
+  margin: 1em 40px;
+}
+
+
+
+
+pre {
+  padding:0;
+  border-width:2px;
+  border-color:#ddd;
+  overflow: auto;
+}
+
+code,
+kbd,
+pre,
+samp {
+  font-family: monospace, monospace;
+  font-size: 1em;
+}
+

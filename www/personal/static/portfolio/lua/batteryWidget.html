@@ -1,0 +1,36 @@
+<pre id="code">
+    -- Create batteryWidget
+      -- the timeout value is in seconds
+      -- the value to be assigned for timeout should give us ten minutes to plug in a charger
+      -- take your expected battery life during high useage, convert to seconds (EBLS)
+      -- evaluate 600/(EBLS), multiply result by 2
+           -- multiple of two considers the case wherein the check occurs 1 second before the capacity check
+           -- this percentange used in the if statement
+      -- multiply the percentage against EBLS and assign to timeout 
+
+      -- Example: 8 hour expected battery life
+      --  8*60*60 = EBLS 
+      --  600/(EBLS)=600/(8*60*60)=1/48~0.02083~2% --- round down to the nearest percent ---
+      --  (2%)*2=4%
+      --  (0.04)*EBLS=(0.04)*8*60*60=1152 
+      --  a value check, 1152 &lt; 1200, 1200 is our 20minute requirement (10min*2)
+
+    batteryWidget = widget({ type = &quot;textbox&quot; })
+    batteryWidget.text = &quot;  &quot; .. io.open(&quot;/sys/class/power_supply/BAT0/capacity&quot;, &quot;r&quot;):read() .. &quot;%  &quot;
+    batteryWidgetTimer = timer({ timeout = 1152 })
+    batteryWidgetTimer:add_signal(&quot;timeout&quot;,
+      function()
+        batCapacity = assert(io.open(&quot;/sys/class/power_supply/BAT0/capacity&quot;, &quot;r&quot;))
+        batStatus   = assert(io.open(&quot;/sys/class/power_supply/BAT0/status&quot;, &quot;r&quot;))
+        capacity    = batCapacity:read()
+        status      = batStatus:read()
+        batteryWidget.text = &quot;  &quot; .. capacity .. &quot;%  &quot;
+        if tonumber(capacity) &lt; 5 and status:match(&quot;Discharging&quot;)then
+          naughty.notify({ text = &quot;Charge me up, I'm feeling low&quot;, timeout = 1151 })
+        end
+        batCapacity:close()
+        batStatus:close()
+      end
+    )
+    batteryWidgetTimer:start()
+</pre>

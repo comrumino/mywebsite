@@ -1,0 +1,161 @@
+<pre id="code">
+from threading import Condition
+from os import _exit
+from sys import platform as plm
+import sys
+
+import constants
+from bash import Bash
+
+def yn_prompt(ri_str):
+    while True:
+        user_input = raw_input(ri_str)
+        user_input = user_input[:1].lower()
+        if user_input == 'y' or user_input == '':
+            return True
+        elif user_input == 'n':
+            return False
+        elif user_input == 'c':
+            Bash.cat_data_file()
+        elif user_input == 'f':
+            Bash.fix_routes()
+        elif user_input == 'q':
+            print &quot;Option q was chosen, now quitting&quot;
+            _exit(0)
+        elif user_input == 'r':
+            Bash.restart_script()
+
+class Settings(object):
+    '''
+    Purpose:
+        This class contains all the pertinate information that may need to be
+        communicated between threads.
+    Args:
+        None
+    Returns:
+        any initialized variable via evaluation of ```self[key]```. Hence,
+        the definition of __getitem__
+    Raises:
+        None
+    Notes for possible additions:
+    '''
+    def __init__(self):
+        self._in_use = False
+        self._condition = Condition()
+        self._waiting = False
+        self._i = 0
+
+        self.gi = &quot;192.168.56.101&quot;
+        self.port = 8621
+        self.pid = 0
+        self.choice = &quot;a&quot;
+        self.script = [&quot;somefile&quot;,&quot;someotherfile&quot;]
+        self.script_c = &quot;somefile&quot;
+        self.number_of_cycles = 0
+        self.samples = [&quot;google.com&quot;,&quot;facebook.com&quot;,&quot;wikipedia.org&quot;]
+        self.auto_fix_routes = True
+        self.auto_save_es = True
+        self.data_file = 'data_file.csv'
+        self.state = ['gi','port','pid','choice','script','script_c',
+                      'number_of_cycles','auto_fix_routes',
+                      'auto_save_es','data_file']
+
+    def __setattr__(self, key, val):
+        try:
+            self.__dict__[key] = val
+        except KeyError as e:
+            raise AttributeError()
+
+    def __getitem__(self, key):
+        try:
+            return self.__dict__[key]
+        except KeyError as e:
+            raise AttributeError()
+
+    def waiting(self, state):
+        if state:
+            self._waiting = state
+        else:
+            sys.stdout.flush()
+            print '[ROUTINE COMPLETED]'
+            print ''
+            self._waiting = state
+
+    def show_waiting(self):
+        if self._waiting:
+            sys.stdout.write('\r')
+            sys.stdout.write(&quot;Running%-4s&quot; % ('.'*self._i))
+            sys.stdout.flush()
+            self._i += 1
+            self._i %= 5
+
+    def open_state(self):
+        self._condition.acquire()
+        while self._in_use:
+            self._condition.wait()
+        self._in_use = True
+
+    def close_state(self):
+        self._in_use = False
+        self._condition.notifyAll()
+        self._condition.release()
+
+    def print_state(self):
+        print (&quot;-------- CURRENT SETTINGS --------&quot;)
+        for key in self.state:
+            print (key + ' = ' + str(self.__dict__[key]))
+        print (&quot;----------------------------------&quot;)
+
+    def change(self):
+        while True:
+            self.open_state()
+            for key in self.state:
+                user_input = raw_input(key + ' = ' + str(self.__dict__[key]) + ' : ')
+                if user_input:
+                    self.__dict__[key] = user_input
+            self.close_state()
+            self.print_state()
+            yes = yn_prompt('Are these settings okay [Y/n/q]?: ')
+            if yes and self.auto_save_es:
+                Bash.save_to_ui(self.choice,self.script)
+                break
+            elif yes:
+                break
+
+    def preference(self):
+        yes = yn_prompt('Are these settings okay [Y/n/q]?: ')
+        if not yes:
+            self.change()
+
+    def prompt(self):
+        self.print_state()
+        self.preference()
+
+    def print_choices(self):
+        for option, defintion in self._choices.iteritems():
+            print 'option: %s' % (option)
+            print '        %s' % (defintion)
+
+    def set(self, state):
+        self.open_state()
+        for key in self.state:
+            setattr(self, key, state[key])
+        self.close_state()
+
+    def update(self,queue):
+        if queue.qsize():
+            self.set_state(queue.get())
+            self.change()
+            queue.put(self.__dict__, False)
+        else:
+            self.change()
+
+    def prompt_at_attempt_limit(self, attempt, mid_limit):
+        if attempt == mid_limit and self.auto_fix_routes:
+            if (plm == &quot;darwin&quot; or plm == &quot;linux&quot; or plm == &quot;linux32&quot;) and\
+                yn_prompt(&quot;Would you like to use py/sh/fixRoutes.sh [Y/n/q]?&quot;):
+                Bash.fix_routes()
+            else:
+                print 'you\'re being difficult... I\'m quitting.'
+                Bash.restart_script()
+</pre>

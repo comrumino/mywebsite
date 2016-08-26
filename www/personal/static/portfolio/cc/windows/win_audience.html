@@ -1,0 +1,21 @@
+<pre id="code">
+#define WIN32_LEAN_AND_MEAN
+#include &quot;stdafx.h&quot;
+#include &lt;windows.h&gt;
+#include &lt;winbase.h&gt;
+#include &lt;tchar.h&gt;
+#include &lt;string&gt;
+
+//Fundamental audience algorithm solution
+int _tmain(int argc, _TCHAR* argv[]){
+  int p=0,a=0,f=0;
+  std::string str = &quot;10101024&quot;;
+  for (char&amp; c : str) {
+    a = a + (int)c - 48; 
+    f = a+f &lt; p ? p-a : f;
+    p++;  
+  }
+  printf(&quot;%i,%i,%i\n&quot;, p, a, f);
+  getchar();
+}
+</pre>

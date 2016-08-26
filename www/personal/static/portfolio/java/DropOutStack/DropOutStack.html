@@ -1,0 +1,149 @@
+<pre id="code">
+/**
+ * ArrayDropOutStack --- assumes that the user doesn't push null to stack
+ * 
+ * @author Lewis et al., Jim Stronz
+ * @version 1.0.1
+ */
+
+public class DropOutStack {
+    /**
+     * Program entry point for drop-out stack testing.
+     * @param args Argument list.
+     */    
+    public static void main(String[] args) {
+        ArrayDropOutStack&lt;Integer&gt; stack = new ArrayDropOutStack&lt;Integer&gt;(4);
+        
+        System.out.println(&quot;DROP-OUT STACK TESTING&quot;);
+        
+        stack.push(1);
+        stack.push(2);
+        stack.push(3);
+        stack.push(4);       
+        stack.push(5);               
+        
+        System.out.println(&quot;The size of the stack is: &quot; + stack.size());        
+        if(!stack.isEmpty())            
+            System.out.println(&quot;The stack contains:\n&quot; + stack.toString());
+        
+        stack.pop();        
+        stack.push(7);
+        stack.push(8);      
+        
+        System.out.println(&quot;The size of the stack is: &quot; + stack.size());                
+        if(!stack.isEmpty())            
+            System.out.println(&quot;The stack contains:\n&quot; + stack.toString());
+    }
+    
+    public static class ArrayDropOutStack&lt;T&gt; implements StackADT&lt;T&gt; {   
+    
+        private int top;  
+        private int capacity;
+        private T[] stack;
+      
+        /**
+         * Creates an empty stack using the specified capacity.
+         * @param initialCapacity the initial size of the array 
+         */
+        @SuppressWarnings(&quot;unchecked&quot;) //see p505.
+        public ArrayDropOutStack(int initialCapacity) {
+            top = 0;
+            capacity = initialCapacity;
+            stack = (T[])(new Object[initialCapacity]);
+        }
+    
+        /**
+         * Adds the specified element to the top of this stack, expanding
+         * the capacity of the array if necessary.
+         * @param element generic element to be pushed onto stack
+         */
+        public void push(T element) {
+            top = top % stack.length;
+            stack[top] = element;
+            top++;
+        }
+
+        /**
+         * Removes the element at the top of this stack and returns a
+         * reference to it. 
+         * @return element removed from top of stack
+         * @throws EmptyCollectionException if stack is empty 
+         */
+        public T pop() throws EmptyCollectionException {
+            if (isEmpty())
+                throw new EmptyCollectionException(&quot;stack&quot;);
+
+            // Invert the operation done on top in push
+            top--;
+            if (top == -1) {
+                top = top + stack.length;
+            } // completed the inverse operation
+
+            T result = stack[top];
+            stack[top] = null;
+
+            return result;
+        }
+
+        /**
+         * Returns a reference to the element at the top of this stack.
+         * The element is not removed from the stack.
+         * @return element on top of stack
+         * @throws EmptyCollectionException if stack is empty
+         */
+        public T peek() throws EmptyCollectionException {
+            if (isEmpty())
+                throw new EmptyCollectionException(&quot;stack&quot;);
+
+            return stack[top - 1];
+        }
+
+        /**
+         * Returns true if this stack is empty and false otherwise.
+         * @return true if this stack is empty
+         */
+        public boolean isEmpty() {
+            if (top == 0 &amp;&amp; stack[size()-1] != null) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        /**
+         * Returns the number of elements in this stack.
+         * @return the number of elements in the stack
+         */
+        public int size() {
+            int sz = 0;
+            for (int i = 0; i &lt; capacity; i++) {
+                if (stack[i] != null) {
+                    sz++;
+                }
+            }
+            return sz;
+        }
+
+        /**
+         * Returns a string representation of this stack. The string has the
+         * form of each element printed on its own line, with the top most
+         * element displayed first, and the bottom most element displayed last.
+         * If the list is empty, returns the word &quot;empty&quot;.
+         * @return a string representation of the stack
+         */
+        public String toString() {
+            String result = &quot;&quot;;
+            for ( int i = 0; i &lt; capacity; i ++) {
+                top--;
+                if (top == -1) {
+                    top = top + capacity;
+                }
+                if (stack[top] != null) {
+                    result = result + stack[top].toString() + &quot;\n&quot;;
+                }
+            }
+            return result;
+        }
+    }
+}
+</pre>

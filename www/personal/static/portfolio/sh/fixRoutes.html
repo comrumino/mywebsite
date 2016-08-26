@@ -1,0 +1,42 @@
+<pre id="code">
+#!/bin/bash
+#
+# Script: fixRoutes.sh
+# Author: Stronz
+# Date  : July 2015
+#
+# Platform: MAC OSX YOSEMITE
+#
+# Purpose: check if anyconnect is connected
+#                if connected, then disconnect and then setup virtualbox route
+#
+################################################################################
+#	VARIABLES HERE
+################################################################################
+STATEA=''
+STATER=''
+
+################################################################################
+#	FUNCTIONS HERE
+################################################################################
+function handleAnyConnect() {
+  STATEA=&quot;$(/opt/cisco/anyconnect/bin/vpn state | grep -o 'Connected' | head -n 1)&quot;
+  if [ &quot;$STATEA&quot; == &quot;Connected&quot; ]; then
+    /opt/cisco/anyconnect/bin/vpn disconnect | grep 'voidIT'
+    sudo route -n add -cloning -nostatic -net 192.168.56 -interface vboxnet0
+  fi
+}
+
+function ensureRoute() {
+  STATER=&quot;$(netstat -rn | grep -o 'vboxnet0')&quot;
+  if [ &quot;$STATER&quot; != &quot;vboxnet0&quot; ]; then
+    sudo route -n add -cloning -nostatic -net 192.168.56 -interface vboxnet0
+  fi
+}
+
+################################################################################
+#	BEGINNING OF MAIN
+################################################################################
+handleAnyConnect
+ensureRoute
+</pre>

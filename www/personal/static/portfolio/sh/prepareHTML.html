@@ -1,0 +1,42 @@
+<pre id="code">
+#!/bin/bash
+#
+# Script: prepareHTML
+# Author: Stronz
+# Date  : July 2015
+#
+# Platform: Crouton
+#
+# Purpose: not sure 
+#	
+################################################################################
+#	PACKAGE PREREQUISITES HERE
+################################################################################
+#   xclip
+#
+################################################################################
+#	VARIABLES HERE
+################################################################################
+FILE=&quot;$1&quot;
+OUT=&quot;$(echo $FILE | grep -o &quot;^[a-zA-Z][^.]*&quot;)&quot;'.html'
+IFS='\
+'
+
+################################################################################
+#	FUNCTIONS HERE
+################################################################################
+function sedHTML() {
+  sed -iE 's/&amp;/\&amp;amp\;/g;s/&lt;/\&amp;lt\;/g;s/&gt;/\&amp;gt\;/g;s/&quot;/\&amp;quot\;/g' &quot;$OUT&quot;
+}
+
+################################################################################
+#	BEGINNING OF MAIN
+################################################################################
+cp $FILE $OUT
+sedHTML
+sed -iE '1s/^/&lt;pre id=&quot;code&quot;&gt;\
+/' &quot;$OUT&quot;
+printf '&lt;/pre&gt;' &gt;&gt; $OUT
+cat $OUT | xclip -selection c
+#rm $OUT
+</pre>
