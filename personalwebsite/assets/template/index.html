@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="description" content="Personal website for James Stronz">
+  <title>James Stronz - Version 2016</title>
+  <link rel="icon" type="image/png" href="static/images/ico.png">
+{% for css in css_files %}
+  {% block css_files %}
+  <link href="{{ css }}" rel="stylesheet" type="text/css">
+  {% end %}
+{% end %}
+{% for partial in partials %}
+  {% block partial %}
+  <link rel="prefetch" href="{{ partial }}">
+  {% end %}
+{% end %}
+</head>
+<body class="jsonly" onload="pageRefresh();">
+  <div data-role="header" data-posistion="fixed" data-id="constantNav">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div id="navbar-main" class="container">
+        <div class="navbar-header">
+          <a class="directoryToggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" 
+             aria-controls="navbar">menu</a><a id="home" class="navbar-brand">stro.nz</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav main-tabs">
+            <li id="contact">
+              <a>contact</a>
+            </li>
+            <li id="portfolio">
+              <a>portfolio</a>
+            </li>
+            <li id="blog">
+              <a>blog</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </div>
+  <div id="main-content" class="container">
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+  <script src="static/js/bootstrap.min.js"></script>
+  <script src="static/js/generate.js?v=0.5"></script>
+</body>
+</html>

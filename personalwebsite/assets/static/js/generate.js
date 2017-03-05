@@ -103,20 +103,20 @@ function portfolio() {
 function handleContent(page) {
     switch (page) {
       case 'home':
-        $('#main-content').load('/static/'+page+'/index.html', canvases);
+        $('#main-content').load('/static/partial/'+page+'.html', canvases);
         break;
       case 'portfolio':
-        $('#main-content').load('/static/'+page+'/index.html', portfolio);
+        $('#main-content').load('/static/partial/'+page+'.html', portfolio);
         break;
       default:
-        $('#main-content').load('/static/'+page+'/index.html');
+        $('#main-content').load('/static/partial/'+page+'.html');
         break;
     }
 }
 
 window.onload = function () {
     var path = window.location.pathname;
-    if (path === '/') path = '/home/';
+    if (path === '/' || path === '/home') path = '/home/';
     path = path.slice(1,-1);
     $('#'+path).addClass('active');
     handleContent(path);

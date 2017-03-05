@@ -1,7 +1,11 @@
 #!/usr/bin/env python2
 from __future__ import print_function
-__all__ =  ['StaticHandler', 'HomeHandler', 'BlogHandler', 'PortfolioHandler', 'ContactHandler']
 import tornado.web
+import deveta
+from constants import *
+
+__all__ =  ['StaticHandler', 'HomeHandler', 'BlogHandler', 'PortfolioHandler', 'ContactHandler']
+
 
 class StaticHandler(tornado.web.StaticFileHandler):
     def set_extra_headers(self, path):
@@ -16,16 +20,25 @@ class StaticHandler(tornado.web.StaticFileHandler):
 
 class HomeHandler(tornado.web.RequestHandler):
     def get(self):
-        self.render('index.html', entries=[])
+        _partials = deveta.locate.files(DIR['partial'])
+        _partials = map(lambda x: 'static/partial/'+x.split('/')[-1], _partials)
+        _css_files = deveta.locate.files(DIR['css'])
+        _css_files = map(lambda x: 'static/css/'+x.split('/')[-1], _css_files)
+        self.render('index.html', partials=_partials, css_files=_css_files)
 
 class BlogHandler(tornado.web.RequestHandler):
-    def get(self):
+    def get(self, *args):
         self.write("BlogHandler")
 
 class PortfolioHandler(tornado.web.RequestHandler):
-    def get(self):
+    def get(self, *args):
         self.write("PortfolioHandler")
 
 class ContactHandler(tornado.web.RequestHandler):
-    def get(self):
+    def get(self, *args):
         self.write("ContactHandler")
+
+if __name__ == "__main__":
+    _partials = deveta.locate.files(DIR['partial'])
+    _partials = map(lambda x: x.split('/')[-1], _partials)
+    print(_partials)
