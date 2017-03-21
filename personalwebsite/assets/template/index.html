@@ -18,7 +18,7 @@
   {% end %}
 {% end %}
 </head>
-<body class="jsonly" onload="pageRefresh();">
+<body ng-app="personalwebsite" class="jsonly" onload="pageRefresh();">
   <div data-role="header" data-posistion="fixed" data-id="constantNav">
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div id="navbar-main" class="container">
@@ -42,10 +42,22 @@
       </div>
     </nav>
   </div>
-  <div id="main-content" class="container">
+  <div id="main-content"  class="container">
+      <div ng-controller="home" ng-show="visible" ng-cloak>home
+      </div>
+      <div ng-controller="contact" ng-show="visible" ng-cloak>
+      </div>
+      <div ng-controller="portfolio" ng-show="visible" ng-cloak>
+      </div>
+      <div ng-controller="blog" ng-show="visible" ng-cloak>
+      </div>
   </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-  <script src="static/js/bootstrap.min.js"></script>
-  <script src="static/js/generate.js?v=0.5"></script>
+{% for js in js_files %}
+  {% block js %}
+  <script src="{{ js }}"></script>
+  {% end %}
+{% end %}
 </body>
 </html>

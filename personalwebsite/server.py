@@ -14,6 +14,7 @@ if __name__ == "__main__":
                 (r"/static/(.*)", myweb.StaticHandler)]
 
     settings = {"template_path": DIR['template'],
+                "template_whitespace": "oneline",
                 "static_path": DIR['static'],
                 "static_url_prefix": "/static/"}
 

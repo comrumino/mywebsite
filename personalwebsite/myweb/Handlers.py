@@ -1,5 +1,6 @@
 #!/usr/bin/env python2
 from __future__ import print_function
+import hashlib
 import tornado.web
 import deveta
 from constants import *
@@ -18,25 +19,57 @@ class StaticHandler(tornado.web.StaticFileHandler):
         self.set_header("X-XSS-Protection", "1; mode=block")
         self.set_header("X-Content-Type-Options", "nosniff")
 
-class HomeHandler(tornado.web.RequestHandler):
-    def get(self):
-        _partials = deveta.locate.files(DIR['partial'])
-        _partials = map(lambda x: 'static/partial/'+x.split('/')[-1], _partials)
-        _css_files = deveta.locate.files(DIR['css'])
-        _css_files = map(lambda x: 'static/css/'+x.split('/')[-1], _css_files)
-        self.render('index.html', partials=_partials, css_files=_css_files)
 
-class BlogHandler(tornado.web.RequestHandler):
-    def get(self, *args):
-        self.write("BlogHandler")
+def hash_file(filename):
+    return hashlib.sha224(open(filename, 'r').read()).hexdigest()
 
-class PortfolioHandler(tornado.web.RequestHandler):
-    def get(self, *args):
-        self.write("PortfolioHandler")
+def get_files(dir_key):
+    files = deveta.locate.files(DIR[dir_key])
+    return map(lambda x: '//{}/static/{}/{}?v={}'.format(INFO['host'], dir_key, x.split('/')[-1], hash_file(x)), files)
 
-class ContactHandler(tornado.web.RequestHandler):
+class BaseHandler(tornado.web.RequestHandler):
+    my_partials = get_files('partial')
+    my_css_files = get_files('css')
+    my_js_files = get_files('js')
+
+    def get_partials(self):
+        return BaseHandler.my_partials
+
+    def get_css_files(self):
+        return BaseHandler.my_css_files
+
+    def get_js_files(self):
+        return BaseHandler.my_js_files
+        
+
+class HomeHandler(BaseHandler):
     def get(self, *args):
-        self.write("ContactHandler")
+        home_render_kwargs = {'partials': self.get_partials(),
+                              'css_files': self.get_css_files(),
+                              'js_files': self.get_js_files()}
+        self.render('index.html', **home_render_kwargs)
+
+
+class BlogHandler(BaseHandler):
+    def get(self, *args):
+        blog_render_kwargs = {'partials': self.get_partials(),
+                              'css_files': self.get_css_files(),
+                              'js_files': self.get_js_files()}
+        self.render('index.html', **blog_render_kwargs)
+
+class PortfolioHandler(BaseHandler):
+    def get(self, *args):
+        portfolio_render_kwargs = {'partials': self.get_partials(),
+                                   'css_files': self.get_css_files(),
+                                   'js_files': self.get_js_files()}
+        self.render('index.html', **portfolio_render_kwargs)
+
+class ContactHandler(BaseHandler):
+    def get(self, *args):
+        contact_render_kwargs = {'partials': self.get_partials(),
+                                 'css_files': self.get_css_files(),
+                                 'js_files': self.get_js_files()}
+        self.render('index.html', **contact_render_kwargs)
 
 if __name__ == "__main__":
     _partials = deveta.locate.files(DIR['partial'])

@@ -69,7 +69,7 @@ octx.shadowBlur = 7;
 octx.font = "2.5em Inconsolata";
 octx.textAlign = "center";
 octx.fillStyle= "#03a9f4";
-octx.fillText("Welcome to a Stronz virtual abode",canvas.width/2,canvas.height/2);
+octx.fillText("Welcome to stro.nz, a Stronz virtual abode",canvas.width/2,canvas.height/2);
 dataURL = overlay.toDataURL('image/png',1);
 //octx.fillStyle = "rgba(0,0,0,0)";
 //octx.clearRect(0, 0, canvas.width, canvas.height);

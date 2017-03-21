@@ -4,6 +4,9 @@ a{color: #ffffff;text-decoration:none;background-color:transparent;}
 a:active,a:hover{color:#03a9f4;text-decoration:none;border-width:0.2em;outline:0;}
 code{font-family:monospace,monospace;font-size:1.6em;}
 h1{margin:0.75em 0.75em 0.75em 0.75em;font-size:2em;line-height:1em;}
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
 #home-content>p,#contact-content>p{text-align: center;line-height:66vh;border: 1px solid #333;}
 #contact-content p .IN-widget{margin: 3em 0 0 0;}
 #portfolio-content{margin:1.5em 0em 1.5em 0em;}
