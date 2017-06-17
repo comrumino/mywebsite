@@ -6,3 +6,4 @@ __url__ = 'https://github.com/strayArch/personal-website'
 __version__ = '1.0.0'
 
 import myweb
+import server

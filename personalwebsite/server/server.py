@@ -2,11 +2,13 @@
 ''' module doc string '''
 from __future__ import print_function
 import tornado.ioloop
-import myweb
-from myweb.constants import DIR
+from personalwebsite import myweb
+from personalwebsite.myweb.constants import DIR
+
+__all__ = ['run']
 
 
-if __name__ == "__main__":
+def run():
     handlers = [(r"/(?:home/?)?", myweb.HomeHandler), 
                 (r"/blog/(.*)?", myweb.BlogHandler), 
                 (r"/portfolio/?(.*)?", myweb.PortfolioHandler),
@@ -23,3 +25,7 @@ if __name__ == "__main__":
     _address = '127.0.0.1'
     app.listen(_port, address=_address)
     tornado.ioloop.IOLoop.current().start()
+    
+
+if __name__ == "__main__":
+    run()
