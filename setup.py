@@ -20,6 +20,7 @@ setup(name=package_name,
       description=description,
       long_description=long_description,
       packages=find_packages(),
+      include_package_data=True,
       install_requires=requirements,
       license=package.__license__
 )
