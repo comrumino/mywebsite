@@ -1,20 +1,35 @@
-pkgname=personal-website-git
-pkgver=1.0.0
+# Maintainer: strayArch 
+
+_pkgname=personalwebsite
+pkgname="python2-${_pkgname}-git"
+pkgver=r5.7cc75e1
 pkgrel=1
-pkgdesc="Personal Website"
-arch=('x86_64')
+pkgdesc="A Tornado Based Personal Website"
+arch=("x86_64")
 url="https://github.com/strayArch/personal-website"
-license=('GPL3')
-depends=('python2' 'python2-tornado')
-provides=('personal-website')
-source=('git+https://github.com/strayArch/personal-website')
-sha512sums=('SKIP')
+license=("GPL3")
+depends=("python2" "python2-tornado")
+makedepends=("git" "python2-setuptools")
+source=("${_pkgname}::git+https://github.com/strayArch/personal-website")
+sha512sums=("SKIP")
 
 pkgver() {
-    cd "$srcdir/${pkgname%-git}"
-    printf "%s" "$(git describe --long | sed 's/\([^-]*-\)g/r\1/;s/-/./g')"
+  cd "${_pkgname}"
+  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
 }
 
 package() {
-    cd "$srcdir/${pkgname%-git}"
+  cd "${_pkgname}"
+  python2 setup.py install --root="${pkgdir}" --optimize=1
+
+  install -dm755 "${pkgdir}/usr/bin"
+  cat > ${pkgdir}/usr/bin/${_pkgname} << EOF
+#!/usr/bin/env python2
+import personalwebsite
+
+
+if __name__ == "__main__":
+    personalwebsite.server.run()
+EOF
+  chmod 0755 $pkgdir/usr/bin/personalwebsite
 }
