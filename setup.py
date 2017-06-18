@@ -4,10 +4,10 @@ import sys
 from setuptools import setup, find_packages
 
 package_name = 'personalwebsite'
-description = 'A python library to encapsulate my personal website'
-readme = open('misc/README.rst').read()
+description = 'A python2 library to encapsulate my personal website'
+readme = open('README.md').read()
 requirements = []
-long_description = open('misc/README.rst').read()
+long_description = open('README.md').read()
 package = __import__(package_name)
 
 package_version = package.__version__
