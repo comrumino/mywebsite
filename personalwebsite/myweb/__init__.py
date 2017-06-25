@@ -1,4 +1,4 @@
-__all__ =  ['StaticHandler', 'HomeHandler', 'BlogHandler', 'PortfolioHandler', 'ContactHandler', #Handlers.py
+__all__ =  ['StaticHandler', 'HomeHandler', 'PortfolioHandler', 'AboutMeHandler', #Handlers.py
             'constants'] #constants.py
-from Handlers import StaticHandler, HomeHandler, BlogHandler, PortfolioHandler, ContactHandler
+from Handlers import StaticHandler, HomeHandler, PortfolioHandler, AboutMeHandler
 import constants

@@ -7,10 +7,10 @@ h1{margin:0.75em 0.75em 0.75em 0.75em;font-size:2em;line-height:1em;}
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
   display: none !important;
 }
-#home-content>p,#contact-content>p{text-align: center;line-height:66vh;border: 1px solid #333;}
-#contact-content p .IN-widget{margin: 3em 0 0 0;}
+#home-content>p,#about-me-content>p{text-align: center;line-height:66vh;border: 1px solid #333;}
+#about-me-content p .IN-widget{margin: 3em 0 0 0;}
 #portfolio-content{margin:1.5em 0em 1.5em 0em;}
-#contact-content>p>a{color: #323232;}
+#about-me-content>p>a{color: #323232;}
 p{margin:1em 0em 1em 0em;font-size:1.5em;line-height: 1em;}
 pre,#codetainer{display:block;padding:0em;margin:0 0 0;font-size:1em;line-height:1em;color:#333;word-break:break-all;word-wrap:break-word;background-color:transparent;border:1px solid #333;border-radius:0px;overflow:auto;}
 pre,#code{display: block;padding:0em;margin:0 0 0;font-size:1.3em;line-height:1.42em;color:#333;word-break:break-all;word-wrap:break-word;background-color:transparent;border:0px solid #333;border-radius:0px;overflow:auto;}

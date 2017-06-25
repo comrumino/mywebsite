@@ -10,9 +10,8 @@ __all__ = ['run']
 
 def run():
     handlers = [(r"/(?:home/?)?", myweb.HomeHandler), 
-                (r"/blog/(.*)?", myweb.BlogHandler), 
                 (r"/portfolio/?(.*)?", myweb.PortfolioHandler),
-                (r"/contact/?", myweb.ContactHandler),
+                (r"/about-me/?", myweb.AboutMeHandler),
                 (r"/static/(.*)", myweb.StaticHandler)]
 
     settings = {"template_path": DIR['template'],

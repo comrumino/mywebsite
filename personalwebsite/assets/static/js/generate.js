@@ -121,14 +121,14 @@ window.onload = function () {
     $('#'+path).addClass('active');
     handleContent(path);
 }
-$('#home,#blog,#portfolio,#contact').each(function (e) {
+$('#home,#portfolio,#about-me').each(function (e) {
   $(this).click(function () {
     if (!$(this).hasClass('active')) {
       var path = $(this).attr('id'),
           root = 'static/';
       $(this).addClass('active');
       window.history.pushState(path, "Stronz", "/"+path+"/");
-      $('#home.active,#blog.active,#portfolio.active,#contact.active').not(this).each(function (e) {$(this).removeClass('active');});
+      $('#home.active,#portfolio.active,#about-me.active').not(this).each(function (e) {$(this).removeClass('active');});
       handleContent(path);
     }
   });

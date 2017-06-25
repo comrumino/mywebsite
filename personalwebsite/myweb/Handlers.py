@@ -5,7 +5,7 @@ import tornado.web
 import deveta
 from constants import *
 
-__all__ =  ['StaticHandler', 'HomeHandler', 'BlogHandler', 'PortfolioHandler', 'ContactHandler']
+__all__ = ['StaticHandler', 'HomeHandler', 'PortfolioHandler', 'AboutMeHandler']
 
 
 class StaticHandler(tornado.web.StaticFileHandler):
@@ -25,7 +25,7 @@ def hash_file(filename):
 
 def get_files(dir_key):
     files = deveta.locate.files(DIR[dir_key])
-    return map(lambda x: '//{}/static/{}/{}?v={}'.format(INFO['host'], dir_key, x.split('/')[-1], hash_file(x)), files)
+    return ['//{}/static/{}/{}?v={}'.format(INFO['host'], dir_key, fname.split('/')[-1], hash_file(fname)) for fname in files]
 
 class BaseHandler(tornado.web.RequestHandler):
     my_partials = get_files('partial')
@@ -40,7 +40,7 @@ class BaseHandler(tornado.web.RequestHandler):
 
     def get_js_files(self):
         return BaseHandler.my_js_files
-        
+
 
 class HomeHandler(BaseHandler):
     def get(self, *args):
@@ -50,13 +50,6 @@ class HomeHandler(BaseHandler):
         self.render('index.html', **home_render_kwargs)
 
 
-class BlogHandler(BaseHandler):
-    def get(self, *args):
-        blog_render_kwargs = {'partials': self.get_partials(),
-                              'css_files': self.get_css_files(),
-                              'js_files': self.get_js_files()}
-        self.render('index.html', **blog_render_kwargs)
-
 class PortfolioHandler(BaseHandler):
     def get(self, *args):
         portfolio_render_kwargs = {'partials': self.get_partials(),
@@ -64,14 +57,14 @@ class PortfolioHandler(BaseHandler):
                                    'js_files': self.get_js_files()}
         self.render('index.html', **portfolio_render_kwargs)
 
-class ContactHandler(BaseHandler):
+class AboutMeHandler(BaseHandler):
     def get(self, *args):
-        contact_render_kwargs = {'partials': self.get_partials(),
+        aboutme_render_kwargs = {'partials': self.get_partials(),
                                  'css_files': self.get_css_files(),
                                  'js_files': self.get_js_files()}
-        self.render('index.html', **contact_render_kwargs)
+        self.render('index.html', **aboutme_render_kwargs)
 
 if __name__ == "__main__":
     _partials = deveta.locate.files(DIR['partial'])
-    _partials = map(lambda x: x.split('/')[-1], _partials)
+    _partials = [part.split('/')[-1] for part in _partials]
     print(_partials)

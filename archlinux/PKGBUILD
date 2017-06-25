@@ -2,7 +2,7 @@
 
 _pkgname=personalwebsite
 pkgname="python2-${_pkgname}-git"
-pkgver=r5.7cc75e1
+pkgver=r9.9cec37e
 pkgrel=1
 pkgdesc="A Tornado Based Personal Website"
 arch=("x86_64")
