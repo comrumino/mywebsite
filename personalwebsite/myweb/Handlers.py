@@ -1,4 +1,5 @@
-#!/usr/bin/env python2
+"""Module for handlers
+"""
 from __future__ import print_function
 import hashlib
 import tornado.web
@@ -57,14 +58,10 @@ class PortfolioHandler(BaseHandler):
                                    'js_files': self.get_js_files()}
         self.render('index.html', **portfolio_render_kwargs)
 
+
 class AboutMeHandler(BaseHandler):
     def get(self, *args):
         aboutme_render_kwargs = {'partials': self.get_partials(),
                                  'css_files': self.get_css_files(),
                                  'js_files': self.get_js_files()}
         self.render('index.html', **aboutme_render_kwargs)
-
-if __name__ == "__main__":
-    _partials = deveta.locate.files(DIR['partial'])
-    _partials = [part.split('/')[-1] for part in _partials]
-    print(_partials)
