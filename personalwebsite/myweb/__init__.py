@@ -1,4 +1,6 @@
-__all__ =  ['StaticHandler', 'HomeHandler', 'PortfolioHandler', 'AboutMeHandler', #Handlers.py
-            'constants'] #constants.py
-from Handlers import StaticHandler, HomeHandler, PortfolioHandler, AboutMeHandler
-import constants
+from __future__ import absolute_import
+from .Handlers import StaticHandler, HomeHandler, PortfolioHandler, AboutMeHandler, HANDLERS
+from . import cfg
+
+__all__ =  ['StaticHandler', 'HomeHandler', 'PortfolioHandler', 'AboutMeHandler', 'HANDLERS', # Handlers.py
+            'cfg'] # cfg.py

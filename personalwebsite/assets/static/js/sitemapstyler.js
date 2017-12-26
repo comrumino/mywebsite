@@ -185,8 +185,8 @@ dtStyler.sync = function(node) {
 
 dtStyler.generateIcons = function(dt) {
   // append icons/canvases to li
-  var nodes = dt.getElementsByTagName("li"),
-    node;
+  var nodes = dt.getElementsByTagName("li");
+  var node;
   dtStyler.updatePadding();
   for (var i = 0; i < nodes.length; i++) {
     node = nodes[i];
@@ -201,7 +201,7 @@ dtStyler.directorytreeStyler = function() {
 };
 
 // Main
-$(document).ready(function() {
+dtStyler.main = function() {
 dtStyler.history = new dtStyler.History();
 dtStyler.directorytreeStyler();
   var git_hash = window.location.hash;
@@ -211,4 +211,5 @@ dtStyler.directorytreeStyler();
     dtStyler.history.loaded = $(git_hash);
   }
 $('#portfolio-content').css("visibility", "visible");
-});
+
+};

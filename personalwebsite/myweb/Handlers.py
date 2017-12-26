@@ -1,11 +1,12 @@
 """Module for handlers"""
+from __future__ import absolute_import
 from __future__ import print_function
 import hashlib
 import tornado.web
 import deveta
-from constants import DIR, INFO
+from .cfg import DIR, HOST
 
-__all__ = ["StaticHandler", "HomeHandler", "PortfolioHandler", "AboutMeHandler"]
+__all__ = ["StaticHandler", "HomeHandler", "PortfolioHandler", "AboutMeHandler", "HANDLERS"]
 
 
 class StaticHandler(tornado.web.StaticFileHandler):
@@ -37,28 +38,17 @@ class BaseHandler(tornado.web.RequestHandler):
     @staticmethod
     def _get_fname_string(dir_key, fname):
         """Returns file name w/ version as result of hash_file()"""
-        _host = INFO["host"]
+        _host = HOST
         _fname = fname.split("/")[-1]
         _hash_file = BaseHandler._hash_file(fname)
         return "//{}/static/{}/{}?v={}".format(_host, dir_key, _fname, _hash_file)
 
     @staticmethod
-    def _get_files(dir_key):
+    def _get_files(dir_key, order=None):
         """Returns a list of strings and is set in BaseHandler scope"""
         _files = deveta.locate.files(DIR[dir_key])
-        return [BaseHandler._get_fname_string(dir_key, _fname) for _fname in _files]
+        return [BaseHandler._get_fname_string(dir_key, _fname) for _fname in _files if not _fname.split('/')[-1].startswith('.')]
 
-    def get_partials(self):
-        """Returns the partial file names in the proper format"""
-        return self._partials
-
-    def get_css_files(self):
-        """Returns the css file names in the proper format"""
-        return self._css_files
-
-    def get_js_files(self):
-        """Returns the js file names in the proper format"""
-        return self._js_files
 
 
 class HomeHandler(BaseHandler):
@@ -89,3 +79,9 @@ class AboutMeHandler(BaseHandler):
                                  "css_files": self._css_files,
                                  "js_files": self._js_files}
         self.render("index.html", **aboutme_render_kwargs)
+
+
+HANDLERS = [(r"/(?:home/?)?", HomeHandler),
+            (r"/portfolio/?(.*)?", PortfolioHandler),
+            (r"/about-me/?", AboutMeHandler),
+            (r"/static/(.*)", StaticHandler)]

@@ -96,9 +96,7 @@ function pageRefresh() {
 }
 function portfolio() {
     $.cachedScript("/static/js/sitemapstyler.js");
-
-    if (window.location.hash)
-      loadGist(window.location.hash.substring(1));
+    dtStyler.main();
 }
 function handleContent(page) {
     switch (page) {
@@ -114,10 +112,18 @@ function handleContent(page) {
     }
 }
 
-window.onload = function () {
-    var path = window.location.pathname;
-    if (path === '/' || path === '/home') path = '/home/';
+function pathAutocorrect(path) {
+    if (path === '/') path = '/home/';
+    var lastCharLoc = path.length - 1;
+    if (path[lastCharLoc] !== '/') path += '/';
     path = path.slice(1,-1);
+    return path;
+}
+
+window.onload = function() {
+    var path = window.location.pathname;
+    path = pathAutocorrect(path);
+    console.log(path);
     $('#'+path).addClass('active');
     handleContent(path);
 }
