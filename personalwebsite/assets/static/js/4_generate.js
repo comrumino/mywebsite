@@ -3,7 +3,10 @@ $(window).on('orientationchange popstate', function(e) {//TODO
 });
 $(window).on('resize', function(e) {
     var path = window.location.pathname;
-    if (path === '/' || path === '/home/') location.reload();
+    if (path === '/' || path === '/home/') {
+    resize();
+    };
+    console.log('resize');
 });
 
 
@@ -68,34 +71,17 @@ $(document).on('click', '.directoryToggle', function () {
     }, 10);
 });
 
-var landCanvas = function (identity) {
-    this.canvas = document.createElement('canvas');
-    this.canvas.id = identity;
-    this.ctx = this.canvas.getContext('2d');
-    var div = $('#home-content'),
-        divWidth = $(div).width(),
-        divHeight = window.innerHeight*0.66-55;
-    this.canvas.style.padding = "10px 0px 0px 0px";
-    this.canvas.height = divHeight;
-    this.canvas.width = divWidth;
-    this.canvas.style.position = "absolute";
-    this.canvas.style.top = 0;
-    this.canvas.style.left = 0;
-
-    $(div).append(this.canvas); 
-}
 function canvases() {
     $('#home-content').css('position','relative');
-    var c0 = landCanvas('land-canvas'), 
-        c1 = landCanvas('land-overlay'),
-        c2 = landCanvas('land-glitch');
-    $.cachedScript("/static/js/noise.js");
+    var noise_canvas = landCanvas('land-canvas', 1);
+    var text_canvas = landCanvas('land-overlay', 2);
+    init(noise_canvas, text_canvas);
 }
 function pageRefresh() {
     var hash = window.location.hash;
 }
 function portfolio() {
-    $.cachedScript("/static/js/sitemapstyler.js");
+    $.cachedScript("/static/js/3_sitemapstyler.js");
     dtStyler.main();
 }
 function handleContent(page) {
@@ -171,7 +157,7 @@ function loadGist(hash) {
 history.pushState(null, null, '#'+hash);
 var codetainer = document.getElementById("codetainer"),
     iFrame = document.createElement("iframe"),
-    HTML = '<html><body style="margin:0" onload="parent.resizeIFrame(document.body.scrollHeight)"><script'
+    HTML = '<html><head><link href="/static/css/1_bootstrap.css" rel="stylesheet"></head><body style="margin:0" onload="parent.resizeIFrame(document.body.scrollHeight)"><script'
          + ' type="text/javascript" src="https://gist.github.com/' + hash + '.js"></script></body></html>';
 iFrame.setAttribute("width", "100%");
 iFrame.id = "iFrame";

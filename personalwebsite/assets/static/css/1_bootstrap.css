@@ -12,8 +12,12 @@ h1{margin:0.75em 0.75em 0.75em 0.75em;font-size:2em;line-height:1em;}
 #portfolio-content{margin:1.5em 0em 1.5em 0em;}
 #about-me-content>p>a{color: #323232;}
 p{margin:1em 0em 1em 0em;font-size:1.5em;line-height: 1em;}
-pre,#codetainer{display:block;padding:0em;margin:0 0 0;font-size:1em;line-height:1em;color:#333;word-break:break-all;word-wrap:break-word;background-color:transparent;border:1px solid #333;border-radius:0px;overflow:auto;}
-pre,#code{display: block;padding:0em;margin:0 0 0;font-size:1.3em;line-height:1.42em;color:#333;word-break:break-all;word-wrap:break-word;background-color:transparent;border:0px solid #333;border-radius:0px;overflow:auto;}
+pre,#codetainer{display:block;padding:0em;margin:0 0 0;font-size:1em;line-height:1em;color:#333;word-break:break-all;word-wrap:break-word;background-color:transparent;border:1px solid #333;border-radius:0px;overflow:hidden;}
+pre,#code{display: block;padding:0em;margin:0 0 0;font-size:1.3em;line-height:1.42em;color:#333;word-break:break-all;word-wrap:break-word;background-color:transparent;border:0px solid #333;border-radius:0px;overflow:hidden;}
+.gist .gist-data{overflow:hidden !important;}
+.gist .gist-file{border:0 !important;margin:0 !important;}
+iframe{border:0;}
+canvas{display:float;}
 ul{margin-top:0em;}
 /*! Source: https://github.com/h5bp/html5-boilerplate/blob/master/src/css/main.css */
 @media print{*,*:before,*:after{color:#000 !important;text-shadow:none !important;background:transparent !important;-webkit-box-shadow:none !important;box-shadow:none !important;}
@@ -64,7 +68,7 @@ p,h2,h3{orphans:3;widows:3;}
 @media (max-width:767px){.navbar-nav>li>a{float:none;}.navbar-collapse{padding-left:0em;padding-right:0em;}.pull-left{width:100%!important;}}
 .navbar-inverse{background-color:#323232;border-color:#333;}
 .navbar-inverse .navbar-brand{color:#ffffff;}
-.navbar-inverse .navbar-brand:hover,.navbar-inverse .navbar-brand:focus{color: #03a9f4;background-color:transparent;}
+.navbar-inverse .navbar-brand:hover,.navbar-inverse .navbar-brand:focus,.navbar-brand.active{color: #03a9f4;background-color:transparent;}
 .navbar-inverse .navbar-nav>li>a{color:#ffffff;}
 .navbar-inverse .navbar-nav>li>a:hover,.navbar-inverse .navbar-nav>li>a:focus{color:#03a9f4;background-color:transparent;}
 .navbar-inverse .navbar-nav>.active>a,

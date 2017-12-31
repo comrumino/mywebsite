@@ -46,7 +46,7 @@ class BaseHandler(tornado.web.RequestHandler):
     @staticmethod
     def _get_files(dir_key, order=None):
         """Returns a list of strings and is set in BaseHandler scope"""
-        _files = deveta.locate.files(DIR[dir_key])
+        _files = deveta.locate.files(DIR[dir_key]) # The list returned is sorted, number files if a certain order is desired
         return [BaseHandler._get_fname_string(dir_key, _fname) for _fname in _files if not _fname.split('/')[-1].startswith('.')]
 
 

@@ -1,20 +1,25 @@
-pkgname=personal-website-git
-pkgver=406893e
+_pkgname=personalwebsite
+pkgname="python2-${_pkgname}-git"
+pkgver=e1405f7
 pkgrel=1
 pkgdesc="Personal Website"
 arch=('x86_64')
 url="https://github.com/comrumino/personal-website"
 license=('GPL3')
 depends=('python2' 'python2-tornado')
-provides=('personal-website')
-source=('git+https://github.com/comrumino/personal-website')
+makedepends=('git' 'python2-setuptools')
+conflicts=('personal-website-git')
+source=("${_pkgname}::git+https://github.com/comrumino/personal-website")
 sha512sums=('SKIP')
 
 pkgver() {
-    cd "$srcdir/${pkgname%-git}"
+    cd "$srcdir/${_pkgname}"
     printf "%s" "$(git describe --always | sed 's/\([^-]*-\)g/r\1/;s/-/./g')"
 }
 
 package() {
-    cd "$srcdir/${pkgname%-git}"
+  cd "$srcdir/${_pkgname}"
+  python2 setup.py install --root="${pkgdir}" --optimize=1
+
+  install -Dm755 "bin/${_pkgname}" "${pkgdir}/usr/bin/${_pkgname}"
 }
