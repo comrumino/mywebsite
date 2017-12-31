@@ -7,7 +7,7 @@ import deveta
 __all__ = ["ADDRESS", "DIR", "HOST", "PORT", "SETTINGS"]
 
 
-ADDRESS = "127.0.0.1"
+ADDRESS = "74.207.245.103" if socket.gethostname() == "zestronza" else "127.0.0.1"
 DIR = {}
 DIR["assets"] = "/".join([deveta.locate.parent_dir(), "assets"])
 DIR["template"] = "/".join([DIR["assets"], "template"])
