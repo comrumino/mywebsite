@@ -1,0 +1,10 @@
+[Unit]
+Description=My personal website
+
+[Service]
+ExecStart=/usr/bin/personalwebsite
+Restart=on-failure
+Type=simple
+
+[Install]
+WantedBy=multi-user.target

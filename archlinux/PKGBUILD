@@ -20,6 +20,6 @@ pkgver() {
 package() {
   cd "$srcdir/${_pkgname}"
   python2 setup.py install --root="${pkgdir}" --optimize=1
-
   install -Dm755 "bin/${_pkgname}" "${pkgdir}/usr/bin/${_pkgname}"
+  install -Dm755 "misc/${_pkgname}.service" "${pkgdir}/etc/lib/systemd/system/"
 }
