@@ -84,4 +84,5 @@ class AboutMeHandler(BaseHandler):
 HANDLERS = [(r"/(?:home/?)?", HomeHandler),
             (r"/portfolio/?(.*)?", PortfolioHandler),
             (r"/about-me/?", AboutMeHandler),
-            (r"/static/(.*)", StaticHandler)]
+            (r"/static/(.*)", StaticHandler),
+            (r"/public/(.*)", StaticHandler, {"path": DIR['public']})]

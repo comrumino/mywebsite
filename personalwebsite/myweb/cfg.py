@@ -12,6 +12,7 @@ DIR = {}
 DIR["assets"] = "/".join([deveta.locate.parent_dir(), "assets"])
 DIR["template"] = "/".join([DIR["assets"], "template"])
 DIR["static"] = "/".join([DIR["assets"], "static"])
+DIR["public"] = "/data/www/public"
 DIR["tmp"] = "/".join([DIR["static"], "tmp"])
 DIR["partial"] = "/".join([DIR["static"], "partial"])
 DIR["css"] = "/".join([DIR["static"], "css"])
