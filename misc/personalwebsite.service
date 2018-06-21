@@ -1,10 +1,15 @@
 [Unit]
 Description=My personal website
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=300
+StartLimitBurst=9
 
 [Service]
 ExecStart=/usr/bin/personalwebsite
-Restart=on-failure
+Restart=always
 Type=simple
+RestartSec=30
 
 [Install]
 WantedBy=multi-user.target
