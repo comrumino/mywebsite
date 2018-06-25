@@ -4,7 +4,7 @@
     EXT, a compiled regular expression for identifying if the file extension is supported
         The original expression was
             _ext = '\.(?:7z|ai|eps|ps|bmp|bz|bz2|c|cc|cxx|cpp|h|hh|dic|csv|f|for|gif|gz|ico|java|'
-            _ext += 'jpeg|jpg|jpe|png|p|pas|s|asm|svg|svgz|tar|tar.gz|tar.bz2|tar.xz|tar.Z|tar.lzma|'
+            _ext += 'jpeg|jpg|jpe|pdf|png|p|pas|s|asm|svg|svgz|tar|tar.gz|tar.bz2|tar.xz|tar.Z|tar.lzma|'
             _ext += 'txz|tbz2|tgz|tlz|gtar|txt|text|conf|def|list|in|log|err|info|warn|crit|notice|'
             _ext += 'css|html|xml|zip)$'
         which is more human readable. Even so, the regex in use requires fewer steps to match.
@@ -57,6 +57,7 @@ CONTENT['list'] = 'text/plain'
 CONTENT['log'] = 'text/plain'
 CONTENT['notice'] = 'text/plain'
 CONTENT['pas'] = 'text/x-pascal'
+CONTENT['pdf'] = 'application/pdf'
 CONTENT['png'] = 'image/png'
 CONTENT['ps'] = 'application/postscript'
 CONTENT['p'] = 'text/x-pascal'
@@ -88,7 +89,7 @@ DIR["partial"] = "/".join([DIR["static"], "partial"])
 DIR["css"] = "/".join([DIR["static"], "css"])
 DIR["js"] = "/".join([DIR["static"], "js"])
 _ext = '\.(7z|a(?:i|sm)|e?ps|b(mp|z2?)|c(c|xx|pp|sv|ss|onf|rit)?|h(?:h?|tml)|'
-_ext += 'd(?:ic|ef)|f(?:or)?|g(if|z|tar)|i(?:co|n(?:fo)?)|j(ava|pe?g?)|p(?:ng|as)?|'
+_ext += 'd(?:ic|ef)|f(?:or)?|g(if|z|tar)|i(?:co|n(?:fo)?)|j(ava|pe?g?)|p(?:ng|as|df)?|'
 _ext += 's(?:vgz?)?|t(?:e?xt|bz2|(?:x|g|l)z|ar(?:.(?:(?:x|g)z|bz2|Z|lzma))?)|'
 _ext += 'l(?:ist|og)|err|warn|notice|xml|zip)$'
 EXT = re.compile(r'{}'.format(_ext), flags=re.M)
