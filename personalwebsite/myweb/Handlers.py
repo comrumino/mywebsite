@@ -4,9 +4,19 @@ from __future__ import print_function
 import hashlib
 import tornado.web
 import deveta
-from .cfg import DIR, HOST
+from .cfg import CONTENT, DIR, EXT, HOST
 
 __all__ = ["StaticHandler", "HomeHandler", "PortfolioHandler", "AboutMeHandler", "HANDLERS"]
+
+
+def _get_content_type(path):
+    _match = EXT.search(path)
+    if _match:
+        return CONTENT[_match.group(1)]
+    else:
+        # Generally, default behavior would be an octet-stream but the auto-download behavior
+        # is not desired. So let the default behavior be plain/text
+        return CONTENT['text']
 
 
 class StaticHandler(tornado.web.StaticFileHandler):
@@ -14,9 +24,12 @@ class StaticHandler(tornado.web.StaticFileHandler):
     def set_extra_headers(self, path):
         etags = ("js/app", "css/app", "partial")
         if path.startswith(etags):
+            # For static assets, set client cacheable and max-age of one week 
             self.set_header("Cache-Control", "private,max-age=604800,must-revalidate") #one week
         else:
-            self.set_header("Cache-Control", "private,max-age=3156000")
+            # For public assets, prevent caching
+            self.set_header("Cache-Control", "no-cache,no-store,must-revalidate")
+            self.set_header("Content-Type", "text/plain")
         self.set_header("X-Frame-Options", "deny")
         self.set_header("X-XSS-Protection", "1; mode=block")
         self.set_header("X-Content-Type-Options", "nosniff") 
