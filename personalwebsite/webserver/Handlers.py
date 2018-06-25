@@ -29,7 +29,8 @@ class StaticHandler(tornado.web.StaticFileHandler):
         else:
             # For public assets, prevent caching
             self.set_header("Cache-Control", "no-cache,no-store,must-revalidate")
-            self.set_header("Content-Type", "text/plain")
+            content_type = _get_content_type(path)
+            self.set_header("Content-Type", content_type)
         self.set_header("X-Frame-Options", "deny")
         self.set_header("X-XSS-Protection", "1; mode=block")
         self.set_header("X-Content-Type-Options", "nosniff") 
