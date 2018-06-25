@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 package_name = 'personalwebsite'
 description = 'A python2 library to encapsulate my personal website'
 readme = open('README.md').read()
-requirements = ['deveta']
+requirements = ['deveta', 'tornado']
 long_description = open('README.md').read()
 package = __import__(package_name)
 
@@ -22,5 +22,6 @@ setup(name=package_name,
       packages=find_packages(),
       include_package_data=True,
       install_requires=requirements,
+      setup_requires=requirements,
       license=package.__license__
 )
