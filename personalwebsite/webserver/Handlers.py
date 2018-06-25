@@ -94,7 +94,7 @@ class AboutMeHandler(BaseHandler):
         self.render("index.html", **aboutme_render_kwargs)
 
 
-HANDLERS = [(r"/(?:home/?)?", HomeHandler),
+HANDLERS = [(r"/?(?:home/?)?", HomeHandler),
             (r"/portfolio/?(.*)?", PortfolioHandler),
             (r"/about-me/?", AboutMeHandler),
             (r"/static/(.*)", StaticHandler),
