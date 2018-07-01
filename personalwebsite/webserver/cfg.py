@@ -1,6 +1,5 @@
-"""cfg, a module for constant assignment statements
-    ADDRESS, is defined based on hostname for ease of deployment
-    PORT, is defined based on hostname for ease of deployment
+"""cfg, a module for global configurations
+    HOST, will use hostname if it is a registered domain, otherwise 127.0.0.1:8080
     EXT, a compiled regular expression for identifying if the file extension is supported
         The original expression was
             _ext = '\.(?:7z|ai|eps|ps|bmp|bz|bz2|c|cc|cxx|cpp|h|hh|dic|csv|f|for|gif|gz|ico|java|'
@@ -11,14 +10,18 @@
 """
 from __future__ import absolute_import
 from __future__ import print_function
+import os
 import re
 import socket
-import deveta
+from tldextract import TLDExtract
 
 __all__ = ["ADDRESS", "CONTENT", "DIR", "EXT", "HOST", "PORT", "SETTINGS"]
 
 
-ADDRESS = "74.207.245.103" if socket.gethostname() == "zestronza" else "127.0.0.1"
+_tld_extract = TLDExtract(cache_file=False)
+
+
+ADDRESS = "127.0.0.1"
 CONTENT = {}
 CONTENT['7z'] = 'application/x-7z-compressed'
 CONTENT['ai'] = 'application/postscript'
@@ -80,7 +83,8 @@ CONTENT['warn'] = 'text/plain'
 CONTENT['xml'] = 'text/plain'
 CONTENT['zip'] = 'application/zip'
 DIR = {}
-DIR["assets"] = "/".join([deveta.locate.parent_dir(), "assets"])
+DIR["base"] = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DIR["assets"] = "/".join([DIR["base"], "assets"])
 DIR["template"] = "/".join([DIR["assets"], "template"])
 DIR["static"] = "/".join([DIR["assets"], "static"])
 DIR["public"] = "/data/www/public"
@@ -93,8 +97,9 @@ _ext += 'd(?:ic|ef)|f(?:or)?|g(if|z|tar)|i(?:co|n(?:fo)?)|j(ava|pe?g?)|p(?:ng|as
 _ext += 's(?:vgz?)?|t(?:e?xt|bz2|(?:x|g|l)z|ar(?:.(?:(?:x|g)z|bz2|Z|lzma))?)|'
 _ext += 'l(?:ist|og)|err|warn|notice|xml|zip)$'
 EXT = re.compile(r'{}'.format(_ext), flags=re.M)
-HOST = "stro.nz" if socket.gethostname() == "zestronza" else "127.0.0.1:8080"
-PORT = 80 if socket.gethostname() == "zestronza" else 8080
+_domain = _tld_extract(socket.gethostname()).registered_domain
+HOST = _domain if _domain else "127.0.0.1:8080"
+PORT = 8080
 SETTINGS = {}
 SETTINGS["template_path"] = DIR["template"]
 SETTINGS["template_whitespace"] = "oneline"
