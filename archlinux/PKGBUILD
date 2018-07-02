@@ -1,12 +1,12 @@
 _pkgname=personalwebsite
 pkgname="python2-${_pkgname}-git"
-pkgver=4893623
+pkgver=1708b6e
 pkgrel=1
 pkgdesc="Personal Website"
 arch=('x86_64')
 url="https://github.com/comrumino/personal-website"
 license=('GPL3')
-depends=('python2' 'python2-tornado')
+depends=('python2' 'python2-tornado' 'python2-tldextract')
 makedepends=('git' 'python2-setuptools')
 conflicts=('personal-website-git')
 source=("${_pkgname}::git+https://github.com/comrumino/personal-website")
