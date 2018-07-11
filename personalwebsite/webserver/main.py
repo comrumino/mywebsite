@@ -10,13 +10,13 @@ __all__ = ['main']
 
 
 def _get_content_type(path):
-    _match = EXT.search(path)
+    _match = cfg.EXT.search(path)
     if _match:
-        return CONTENT[_match.group(1)]
+        return cfg.CONTENT[_match.group(1)]
     else:
         # Generally, default behavior would be an octet-stream but the auto-download behavior
         # is not desired. So let the default behavior be plain/text
-        return CONTENT['text']
+        return cfg.CONTENT['text']
 
 
 class StaticHandler(tornado.web.StaticFileHandler):
@@ -24,7 +24,7 @@ class StaticHandler(tornado.web.StaticFileHandler):
         etags = ("js/app", "css/app", "partial")
         if path.startswith(etags):
             # For static assets, set client cacheable and max-age of one week
-            self.set_header("Cache-Control", "private,max-age=604800,must-revalidate") #one week
+            self.set_header("Cache-Control", "private,max-age=604800,must-revalidate")  # one week
         else:
             # For public assets, prevent caching
             self.set_header("Cache-Control", "no-cache,no-store,must-revalidate")
