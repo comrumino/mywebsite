@@ -5,7 +5,7 @@ $(window).on('resize', function(e) {
     var path = window.location.pathname;
     if (path === '/' || path === '/home/') {
     resize();
-    };
+    }
     console.log('resize');
 });
 
@@ -80,10 +80,18 @@ function canvases() {
 function pageRefresh() {
     var hash = window.location.hash;
 }
+
 function portfolio() {
     $.cachedScript("/static/js/3_sitemapstyler.js");
-    dtStyler.main();
+    var launchDtStyler = setInterval(function() {
+        var dt = document.getElementById("dtStyler");
+        if (dt) {
+    		    dtStyler.main();
+    		    clearInterval(launchDtStyler);
+    	    }	
+    }, 10);
 }
+
 function handleContent(page) {
     switch (page) {
       case 'home':
@@ -99,9 +107,11 @@ function handleContent(page) {
 }
 
 function pathAutocorrect(path) {
-    if (path === '/') path = '/home/';
+    if (path === '/')
+        path = '/home/';
     var lastCharLoc = path.length - 1;
-    if (path[lastCharLoc] !== '/') path += '/';
+    if (path[lastCharLoc] !== '/')
+        path += '/';
     path = path.slice(1,-1);
     return path;
 }
@@ -112,7 +122,7 @@ window.onload = function() {
     console.log(path);
     $('#'+path).addClass('active');
     handleContent(path);
-}
+};
 $('#home,#portfolio,#about-me').each(function (e) {
   $(this).click(function () {
     if (!$(this).hasClass('active')) {
@@ -127,12 +137,10 @@ $('#home,#portfolio,#about-me').each(function (e) {
 });
 
 
-
 /**
  * https://api.jquery.com/jquery.getscript/
  **/
 jQuery.cachedScript = function( url, options ) {
- 
   // Allow user to set any option except for dataType, cache, and url
   options = $.extend( options || {}, {
     dataType: "script",
@@ -152,34 +160,33 @@ jQuery.cachedScript = function( url, options ) {
 if(jQuery.browser.mobile)$.getScript('/static/js/bootstrap.min.js');
 
 
-
 function loadGist(hash) {
-history.pushState(null, null, '#'+hash);
-var codetainer = document.getElementById("codetainer"),
-    iFrame = document.createElement("iframe"),
-    HTML = '<html><head><link href="/static/css/1_bootstrap.css" rel="stylesheet"></head><body style="margin:0" onload="parent.resizeIFrame(document.body.scrollHeight)"><script'
-         + ' type="text/javascript" src="https://gist.github.com/' + hash + '.js"></script></body></html>';
-iFrame.setAttribute("width", "100%");
-iFrame.id = "iFrame";
-codetainer.innerHTML = "";
-codetainer.appendChild(iFrame);
+    history.pushState(null, null, '#'+hash);
+    var codetainer = document.getElementById("codetainer");
+    var iFrame = document.createElement("iframe");
+    var HTML = '<html><head><link href="/static/css/1_bootstrap.css" rel="stylesheet"></head>' +
+        '<body style="margin:0" onload="parent.resizeIFrame(document.body.scrollHeight)"><script' +
+        ' type="text/javascript" src="https://gist.github.com/' + hash + '.js"></script></body></html>';
+    iFrame.setAttribute("width", "100%");
+    iFrame.id = "iFrame";
+    codetainer.innerHTML = "";
+    codetainer.appendChild(iFrame);
 
-if (iFrame.contentDocument) iFrame.document = iFrame.contentDocument;
-else if (iFrame.contentWindow) iFrame.document = iFrame.contentWindow.document;
+    if (iFrame.contentDocument)
+        iFrame.document = iFrame.contentDocument;
+    else if (iFrame.contentWindow)
+        iFrame.document = iFrame.contentWindow.document;
 
-iFrame.document.open();
-iFrame.document.writeln(HTML);
-iFrame.document.close();
+    iFrame.document.open();
+    iFrame.document.writeln(HTML);
+    iFrame.document.close();
 }
 
 function resizeIFrame(h) {
-var iFrame = document.getElementById("iFrame");
-iFrame.style.height = parseInt(h) +5+ "px";
+    var iFrame = document.getElementById("iFrame");
+    iFrame.style.height = parseInt(h) +5+ "px";
 }
 
 $(document).on('click', '.portfolio-content', function() {
     loadGist(this.id);
 });
-
-
-

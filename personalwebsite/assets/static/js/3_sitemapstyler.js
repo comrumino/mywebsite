@@ -203,7 +203,6 @@ dtStyler.directorytreeStyler = function() {
 // Main
 dtStyler.main = function() {
 dtStyler.history = new dtStyler.History();
-dtStyler.directorytreeStyler();
   var git_hash = window.location.hash;
   if (git_hash) {
     $(git_hash).addClass('active');
@@ -211,5 +210,14 @@ dtStyler.directorytreeStyler();
     dtStyler.history.loaded = $(git_hash);
   }
 $('#portfolio-content').css("visibility", "visible");
+dtStyler.directorytreeStyler();
 
 };
+/*
+var launchDtStyler = setInterval(function() {
+  var dt = document.getElementById("dtStyler");
+  if (dt) {
+		dtStyler.main();
+		clearInterval(launchDtStyler);
+	}	
+}, 10);*/
