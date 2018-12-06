@@ -6,17 +6,18 @@ Personalwebsite is a pet project implemented in Python2 under GPL3.
 
 ## Quick start
 
-Personalwebsite is available as an Arch Linux pkgbuild and as a Python2 package. To make the package and install on Arch Linux ...
+Personalwebsite is available as a Pacman PKGBUILD. To make the package and install ...
 ```
-$ git clone "https://github.com/strayArch/personal-website.git"
-$ cd personal-website/archlinux
+$ git clone "https://github.com/comrumino/personal-website.git"
+$ cd ./personal-website/archlinux
 $ makepkg
 $ sudo pacman -U *pkg.tar.xz
 $ sudo personalwebsite 
 ```
-Then, to view the website visit it at [127.0.0.1](http://127.0.0.1/). For local development,
+For local development,
 ```
 $ git clone "https://github.com/strayArch/personal-website.git"
-$ printf "export PYTHONPATH=\'\${PYTHONPATH}:${PWD}/personal-website\'" >> ~/.bashrc && source ~/.bashrc
-$ sudo ./personal-website/personalwebsite/server/server.py
+$ cd ./personal-website/
+$ ./bin/personalwebsite
 ```
+access at [http://127.0.0.1:9001](http://127.0.0.1:9001).

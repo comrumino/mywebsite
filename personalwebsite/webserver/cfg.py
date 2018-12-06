@@ -98,8 +98,8 @@ _ext += 's(?:vgz?)?|t(?:e?xt|bz2|(?:x|g|l)z|ar(?:.(?:(?:x|g)z|bz2|Z|lzma))?)|'
 _ext += 'l(?:ist|og)|err|warn|notice|xml|zip)$'
 EXT = re.compile(r'{}'.format(_ext), flags=re.M)
 _domain = _tld_extract(socket.gethostname()).registered_domain
-HOST = _domain if _domain else "127.0.0.1:8080"
-PORT = 8080
+HOST = _domain if _domain else "127.0.0.1:9001"
+PORT = 9001
 SETTINGS = {}
 SETTINGS["template_path"] = DIR["template"]
 SETTINGS["template_whitespace"] = "oneline"
