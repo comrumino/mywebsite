@@ -3,8 +3,8 @@ import sys
 
 from setuptools import setup, find_packages
 
-package_name = 'personalwebsite'
-description = 'A python2 library to encapsulate my personal website'
+package_name = 'stronz'
+description = 'A python package for stro.nz'
 readme = open('README.md').read()
 requirements = ['tldextract', 'tornado']
 long_description = open('README.md').read()

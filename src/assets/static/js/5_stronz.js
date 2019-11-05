@@ -1,4 +1,4 @@
-var app = angular.module('personalwebsite', []);
+var app = angular.module('stronz', []);
 app.controller('home', ['$scope', function($scope) {
   $scope.visible = false;
 }]);

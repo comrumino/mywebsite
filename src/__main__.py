@@ -1,5 +1,5 @@
 from __future__ import absolute_import
 
-from personalwebsite.webserver.main import main
+from stronz.webserver.main import main
 
 main()

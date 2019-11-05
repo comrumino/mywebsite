@@ -6,7 +6,7 @@ StartLimitIntervalSec=300
 StartLimitBurst=9
 
 [Service]
-ExecStart=/usr/bin/personalwebsite
+ExecStart=/usr/bin/stronz-py
 Restart=always
 Type=simple
 RestartSec=30

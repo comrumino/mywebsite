@@ -2,7 +2,7 @@
 
 Personalwebsite is a pet project implemented in Python2 under GPL3.
 
-![](misc/personalwebsite.gif?raw=true)
+![](misc/stronz.gif?raw=true)
 
 ## Quick start
 
@@ -12,12 +12,12 @@ $ git clone "https://github.com/comrumino/personal-website.git"
 $ cd ./personal-website/archlinux
 $ makepkg
 $ sudo pacman -U *pkg.tar.xz
-$ sudo personalwebsite 
+$ sudo stronz 
 ```
 For local development,
 ```
 $ git clone "https://github.com/strayArch/personal-website.git"
 $ cd ./personal-website/
-$ ./bin/personalwebsite
+$ ./bin/stronz
 ```
 access at [http://127.0.0.1:9001](http://127.0.0.1:9001).

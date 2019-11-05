@@ -95,7 +95,7 @@ ENV/
 *.tmp
 
 # PKGBUILD files
-archlinux/personalwebsite/
+archlinux/stronz/
 archlinux/pkg/
 archlinux/*.pkg.tar.*
 archlinux/src/
