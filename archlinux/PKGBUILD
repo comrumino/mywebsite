@@ -1,18 +1,18 @@
 # Maintainer: James Stronz <comrumino@archstrike.org>
 
-_pkgname=personalwebsite
+_pkgname=stronz
 pkgname="python-${_pkgname}-git"
 pkgver=v1.0.3.r1.c2428a8
-pkgrel=2
-pkgdesc="Personal Website"
+pkgrel=3
+pkgdesc="Personal Website: stro.nz"
 arch=('x86_64')
-url="https://github.com/comrumino/personal-website"
+url="https://github.com/comrumino/_pkgname"
 license=('GPL3')
 depends=('python' 'python-tornado' 'python-tldextract')
 makedepends=('git' 'python-setuptools')
 conflicts=('personal-website-git')
-# source=("${_pkgname}::git+https://github.com/comrumino/personal-website")
-source=("git+file:///home/archie/repo/personal-website")
+# source=("${_pkgname}::git+https://github.com/comrumino/$_pkgname")
+source=("${_pkgname}::git+file:///home/archie/repo/$_pkgname")
 sha512sums=('SKIP')
 
 pkgver() {
