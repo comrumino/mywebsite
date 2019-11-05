@@ -1,10 +1,8 @@
-from __future__ import absolute_import
-from __future__ import print_function
 import hashlib
 import os
 import tornado.ioloop
 import tornado.web
-from . import cfg
+from . import logger, cfg
 
 __all__ = ['main']
 
@@ -37,6 +35,7 @@ class StaticHandler(tornado.web.StaticFileHandler):
 
 class BaseHandler(tornado.web.RequestHandler):
     """Initialize hrefs and use the file hash for each files version"""
+
     def __init__(self, *args, **kwargs):
         super(BaseHandler, self).__init__(*args, **kwargs)
         self._partials = BaseHandler._get_hrefs("partial")
@@ -47,8 +46,10 @@ class BaseHandler(tornado.web.RequestHandler):
     def _get_file_hash(dir_key, fname):
         """Returns sha224 hash of file for cache busting purposes"""
         fabspath = os.path.join(cfg.DIR[dir_key], fname)
-        with open(fabspath, "r") as fhandle:
-            fhash = hashlib.sha224(fhandle.read()).hexdigest()
+        content_codec = 'utf-8'
+        with open(fabspath, "r", encoding=content_codec, errors='surrogatereplace') as fhandle:
+            file_content = fhandle.read()
+            fhash = hashlib.sha224(file_content.encode('utf-8')).hexdigest()
         return fhash
 
     @staticmethod
@@ -61,28 +62,32 @@ class BaseHandler(tornado.web.RequestHandler):
             hrefs.append(href)
         return hrefs
 
+    def get_base_render_kwargs(self):
+        base_render_kwargs = {"partials": self._partials,
+                              "css_files": self._css_files,
+                              "js_files": self._js_files,
+                              "YEAR_STARTED": cfg.YEAR_STARTED}
+        return base_render_kwargs
+
 
 class HomeHandler(BaseHandler):
+    def on_finish(self):
+        logger.info("Rendering home page complete for {}".format(self.request.remote_ip))
+
     def get(self, *args):
-        home_render_kwargs = {"partials": self._partials,
-                              "css_files": self._css_files,
-                              "js_files": self._js_files}
+        home_render_kwargs = self.get_base_render_kwargs()
         self.render("index.html", **home_render_kwargs)
 
 
 class PortfolioHandler(BaseHandler):
     def get(self, *args):
-        portfolio_render_kwargs = {"partials": self._partials,
-                                   "css_files": self._css_files,
-                                   "js_files": self._js_files}
+        portfolio_render_kwargs = self.get_base_render_kwargs()
         self.render("index.html", **portfolio_render_kwargs)
 
 
 class AboutMeHandler(BaseHandler):
     def get(self, *args):
-        aboutme_render_kwargs = {"partials": self._partials,
-                                 "css_files": self._css_files,
-                                 "js_files": self._js_files}
+        aboutme_render_kwargs = self.get_base_render_kwargs()
         self.render("index.html", **aboutme_render_kwargs)
 
 
@@ -92,6 +97,7 @@ def main():
                 (r"/about-me/?", AboutMeHandler),
                 (r"/static/(.*)", StaticHandler),
                 (r"/public/(.*)", StaticHandler, {"path": cfg.DIR['public']})]
+    logger.info("Starting main IO loop at {}:{}".format(cfg.ADDRESS, cfg.PORT))
     _app = tornado.web.Application(handlers, **cfg.SETTINGS)
     _app.listen(cfg.PORT, address=cfg.ADDRESS)
     tornado.ioloop.IOLoop.current().start()

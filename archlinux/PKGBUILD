@@ -2,13 +2,13 @@
 
 _pkgname=stronz
 pkgname="python-${_pkgname}-git"
-pkgver=v1.0.3.r3.dd7cb2a
+pkgver=v1.0.3.r5.c39d3f4
 pkgrel=1
 pkgdesc="Personal Website: stro.nz"
 arch=('x86_64')
 url="https://github.com/comrumino/$_pkgname"
 license=('GPL3')
-depends=('python' 'python-tornado' 'python-tldextract')
+depends=('python' 'python-tornado' 'python-tldextract' 'python-systemd')
 makedepends=('git' 'python-setuptools')
 conflicts=('personal-website-git' 'python2-personalwebsite-git')
 # source=("${_pkgname}::git+$url")
@@ -27,8 +27,8 @@ build() {
 
 package() {
   cd "$srcdir/${_pkgname}"
-  python setup.py install --root="${pkgdir}" --optimize=1
-  install -Dm755 "bin/${_pkgname}" "${pkgdir}/usr/bin/${_pkgname}-py"
+  python setup.py install --skip-build --root="${pkgdir}" --optimize=1
+  install -Dm755 "bin/${_pkgname}-py" "${pkgdir}/usr/bin/${_pkgname}-py"
   install -Dm644 "misc/${_pkgname}.service" "${pkgdir}/usr/lib/systemd/system/${_pkgname}.service"
 }
 

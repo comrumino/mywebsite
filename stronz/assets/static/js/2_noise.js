@@ -25,9 +25,12 @@ var set_canvas_text = function(text_canvas, text_ctx) {
   text_ctx.shadowOffsetY = -5; 
   text_ctx.shadowBlur = 7;
   text_ctx.font = "2.5em Inconsolata";
+  let ctx_measure = ctx.measureText(text_ctx);
+  let font_sz = (25 * (ctx_measure.actualBoundingBoxDescent + ctx_measure.actualBoundingBoxAscent)) / 10;
   text_ctx.textAlign = "center";
   text_ctx.fillStyle = "#03a9f4";
-  text_ctx.fillText("Welcome to stro.nz, a Stronz virtual abode", text_canvas.width/2, text_canvas.height/2);
+  text_ctx.fillText("Welcome to stro.nz", Math.floor(text_canvas.width/2), Math.floor(text_canvas.height/2));
+  text_ctx.fillText("a Stronz virtual abode", Math.floor(text_canvas.width/2), Math.ceil((text_canvas.height/2)+font_sz));
 };
 
 var customRand = function() {

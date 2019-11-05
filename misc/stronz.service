@@ -1,5 +1,5 @@
 [Unit]
-Description=My personal website
+Description=Server service for stro.nz
 After=network-online.target
 Wants=network-online.target
 StartLimitIntervalSec=300

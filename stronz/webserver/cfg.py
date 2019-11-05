@@ -2,25 +2,25 @@
     HOST, will use hostname if it is a registered domain, otherwise 127.0.0.1:8080
     EXT, a compiled regular expression for identifying if the file extension is supported
         The original expression was
-            _ext = '\.(?:7z|ai|eps|ps|bmp|bz|bz2|c|cc|cxx|cpp|h|hh|dic|csv|f|for|gif|gz|ico|java|'
-            _ext += 'jpeg|jpg|jpe|pdf|png|p|pas|s|asm|svg|svgz|tar|tar.gz|tar.bz2|tar.xz|tar.Z|tar.lzma|'
-            _ext += 'txz|tbz2|tgz|tlz|gtar|txt|text|conf|def|list|in|log|err|info|warn|crit|notice|'
-            _ext += 'css|html|xml|zip)$'
+            _ext = r'.(?:7z|ai|eps|ps|bmp|bz|bz2|c|cc|cxx|cpp|h|hh|dic|csv|f|for|gif|gz|ico|java|'
+            _ext += r'jpeg|jpg|jpe|pdf|png|p|pas|s|asm|svg|svgz|tar|tar.gz|tar.bz2|tar.xz|tar.Z|tar.lzma|'
+            _ext += r'txz|tbz2|tgz|tlz|gtar|txt|text|conf|def|list|in|log|err|info|warn|crit|notice|'
+            _ext += r'css|html|xml|zip)$'
         which is more human readable. Even so, the regex in use requires fewer steps to match.
 """
-from __future__ import absolute_import
-from __future__ import print_function
+import datetime
 import os
 import re
 import socket
 from tldextract import TLDExtract
+from .. import PKGNAME
 
-__all__ = ["ADDRESS", "CONTENT", "DIR", "EXT", "HOST", "PORT", "SETTINGS"]
+__all__ = ["YEAR_STARTED", "ADDRESS", "CONTENT", "DIR", "EXT", "HOST", "PORT", "SETTINGS", "PKGNAME"]
 
 
 _tld_extract = TLDExtract(cache_file=False)
 
-
+YEAR_STARTED = datetime.date.today().strftime('%Y')
 ADDRESS = "127.0.0.1"
 CONTENT = {}
 CONTENT['7z'] = 'application/x-7z-compressed'
@@ -31,7 +31,7 @@ CONTENT['bz2'] = 'application/x-bzip2'
 CONTENT['bz'] = 'application/x-bzip'
 CONTENT['cc'] = 'text/x-c'
 CONTENT['conf'] = 'text/plain'
-CONTENT['cpp'] ='text/x-c'
+CONTENT['cpp'] = 'text/x-c'
 CONTENT['crit'] = 'text/plain'
 CONTENT['css'] = 'text/plain'
 CONTENT['csv'] = 'text/csv'
@@ -92,10 +92,10 @@ DIR["tmp"] = "/".join([DIR["static"], "tmp"])
 DIR["partial"] = "/".join([DIR["static"], "partial"])
 DIR["css"] = "/".join([DIR["static"], "css"])
 DIR["js"] = "/".join([DIR["static"], "js"])
-_ext = '\.(7z|a(?:i|sm)|e?ps|b(mp|z2?)|c(c|xx|pp|sv|ss|onf|rit)?|h(?:h?|tml)|'
-_ext += 'd(?:ic|ef)|f(?:or)?|g(if|z|tar)|i(?:co|n(?:fo)?)|j(ava|pe?g?)|p(?:ng|as|df)?|'
-_ext += 's(?:vgz?)?|t(?:e?xt|bz2|(?:x|g|l)z|ar(?:.(?:(?:x|g)z|bz2|Z|lzma))?)|'
-_ext += 'l(?:ist|og)|err|warn|notice|xml|zip)$'
+_ext = r'.(7z|a(?:i|sm)|e?ps|b(mp|z2?)|c(c|xx|pp|sv|ss|onf|rit)?|h(?:h?|tml)|'
+_ext += r'd(?:ic|ef)|f(?:or)?|g(if|z|tar)|i(?:co|n(?:fo)?)|j(ava|pe?g?)|p(?:ng|as|df)?|'
+_ext += r's(?:vgz?)?|t(?:e?xt|bz2|(?:x|g|l)z|ar(?:.(?:(?:x|g)z|bz2|Z|lzma))?)|'
+_ext += r'l(?:ist|og)|err|warn|notice|xml|zip)$'
 EXT = re.compile(r'{}'.format(_ext), flags=re.M)
 _domain = _tld_extract(socket.gethostname()).registered_domain
 HOST = _domain if _domain else "127.0.0.1:9001"
