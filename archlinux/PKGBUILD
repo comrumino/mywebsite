@@ -2,7 +2,7 @@
 
 _pkgname=stronz
 pkgname="python-${_pkgname}-git"
-pkgver=v2.0.0.r0.g2a70220
+pkgver=v2.0.0.r1.g63cb9c2
 pkgrel=1
 pkgdesc="Personal Website: stro.nz"
 arch=('x86_64')
