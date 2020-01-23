@@ -71,9 +71,6 @@ class BaseHandler(tornado.web.RequestHandler):
 
 
 class HomeHandler(BaseHandler):
-    def on_finish(self):
-        logger.info("Rendering home page complete for {}".format(self.request.remote_ip))
-
     def get(self, *args):
         home_render_kwargs = self.get_base_render_kwargs()
         self.render("index.html", **home_render_kwargs)
