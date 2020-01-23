@@ -8,9 +8,9 @@ __all__ = ['main']
 
 
 def _get_content_type(path):
-    _match = cfg.EXT.search(path)
-    if _match:
-        return cfg.CONTENT[_match.group(1)]
+    didx = path.rfind('.')
+    if didx != -1:
+        return cfg.CONTENT[path[didx+1:]]
     else:
         # Generally, default behavior would be an octet-stream but the auto-download behavior
         # is not desired. So let the default behavior be plain/text
@@ -28,7 +28,7 @@ class StaticHandler(tornado.web.StaticFileHandler):
             self.set_header("Cache-Control", "no-cache,no-store,must-revalidate")
             content_type = _get_content_type(path)
             self.set_header("Content-Type", content_type)
-        self.set_header("X-Frame-Options", "deny")
+        # self.set_header("X-Frame-Options", "deny")
         self.set_header("X-XSS-Protection", "1; mode=block")
         self.set_header("X-Content-Type-Options", "nosniff")
 
@@ -96,6 +96,7 @@ def main():
                 (r"/portfolio/?(.*)?", PortfolioHandler),
                 (r"/about-me/?", AboutMeHandler),
                 (r"/static/(.*)", StaticHandler),
+                (r"/xn--jea.cc/(.*)", StaticHandler, {"path": cfg.DIR['xnjeacc']}),
                 (r"/public/(.*)", StaticHandler, {"path": cfg.DIR['public']})]
     logger.info("Starting main IO loop at {}:{}".format(cfg.ADDRESS, cfg.PORT))
     _app = tornado.web.Application(handlers, **cfg.SETTINGS)
