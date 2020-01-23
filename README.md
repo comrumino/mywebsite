@@ -1,6 +1,6 @@
-# A Python2 Library to Encapsulate a Personal Website
+# A Python Library to Encapsulate a Personal Website
 
-Personalwebsite is a pet project implemented in Python2 under GPL3.
+Personalwebsite is a pet project implemented in Python under GPL3.
 
 ![](misc/stronz.gif?raw=true)
 
