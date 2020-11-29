@@ -18,6 +18,6 @@ For local development,
 ```
 $ git clone "https://github.com/strayArch/personal-website.git"
 $ cd ./personal-website/
-$ ./bin/stronz
+$ ./bin/stronz-py
 ```
 access at [http://127.0.0.1:9001](http://127.0.0.1:9001).
