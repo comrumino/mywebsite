@@ -5,13 +5,12 @@ import datetime
 import os
 import re
 import socket
-from tldextract import TLDExtract
+import tldextract
 from .. import PKGNAME
 
 __all__ = ["YEAR_STARTED", "ADDRESS", "CONTENT", "DIR", "EXT", "HOST", "PORT", "SETTINGS", "PKGNAME"]
 
 
-_tld_extract = TLDExtract(cache_file=False)
 
 YEAR_STARTED = datetime.date.today().strftime('%Y')
 ADDRESS = "127.0.0.1"
@@ -88,8 +87,7 @@ DIR["tmp"] = "/".join([DIR["static"], "tmp"])
 DIR["partial"] = "/".join([DIR["static"], "partial"])
 DIR["css"] = "/".join([DIR["static"], "css"])
 DIR["js"] = "/".join([DIR["static"], "js"])
-_domain = _tld_extract(socket.gethostname()).registered_domain
-HOST = _domain if _domain else "127.0.0.1:9001"
+HOST = tldextract.extract(socket.gethostname()).registered_domain or "127.0.0.1:9001"
 PORT = 9001
 SETTINGS = {}
 SETTINGS["template_path"] = DIR["template"]
