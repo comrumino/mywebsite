@@ -35,15 +35,11 @@ class StaticHandler(tornado.web.StaticFileHandler):
 
 class XNStaticHandler(StaticHandler):
 
-    @staticmethod
-    def _get_mime_type(path):
+    def _get_mime_type(self, path):
         """ allows users to define mime type or returns fallback """
         try:
             content_type = None
-            if not path or path == "/":
-                logger.debug("XNStaticHandler is using path fallback")
-                path = 'xn_mime_fallback'
-            content_type_path = cfg.DIR['xnjeacc'].joinpath(f'{path}-type')
+            content_type_path = self.root.joinpath(f'{path}-type')
             if content_type_path.exists():
                 with content_type_path.open() as fhandle:
                     _ext = fhandle.read().strip()
@@ -57,13 +53,15 @@ class XNStaticHandler(StaticHandler):
             return content_type
 
     def set_extra_headers(self, path):
-        self.set_header("Content-Type", XNStaticHandler._get_mime_type(path))
+        self.set_header("Content-Type", self._get_mime_type(path))
         self.set_header("Cache-Control", "no-cache,no-store,must-revalidate")
 
     def parse_url_path(self, url_path):
-        if not url_path or url_path == "/":
-            url_path = 'xn_type_fallback'
-        return cfg.DIR['xnjeacc'].joinpath(url_path)
+        fs_path = self.root.joinpath(url_path or "")  # when url doesn't end with /, url_path is None
+        if fs_path == self.root:
+            fs_path = fs_path.joinpath('xn_mime_fallback')
+            logger.debug(f"XNStaticHandler is using path fallback {fs_path}")
+        return fs_path
 
 
 class BaseHandler(tornado.web.RequestHandler):
@@ -126,7 +124,7 @@ def main():
                 (r"/portfolio/?(.*)?", PortfolioHandler),
                 (r"/about-me/?", AboutMeHandler),
                 (r"/static/(.*)", StaticHandler),
-                (r"/xn--jea.cc/(.*)", XNStaticHandler, {"path": cfg.DIR['xnjeacc']}),
+                (r"/xn--jea.cc(?:/(.*))?", XNStaticHandler, {"path": cfg.DIR['xnjeacc']}),
                 (r"/public/(.*)", StaticHandler, {"path": cfg.DIR['public']})]
     logger.info("Starting main IO loop at {}:{}".format(cfg.ADDRESS, cfg.PORT))
     _app = tornado.web.Application(handlers, **cfg.SETTINGS)
