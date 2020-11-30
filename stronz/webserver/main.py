@@ -8,13 +8,13 @@ __all__ = ['main']
 
 
 def _get_content_type(path):
+    # Generally, default behavior would be an octet-stream but the auto-download behavior
+    # is not desired. So let the default behavior be plain/text
+    content_type = cfg.CONTENT['fallback']
     didx = path.rfind('.')
     if didx != -1:
-        return cfg.CONTENT[path[didx+1:]]
-    else:
-        # Generally, default behavior would be an octet-stream but the auto-download behavior
-        # is not desired. So let the default behavior be plain/text
-        return cfg.CONTENT['text']
+        content_type = cfg.CONTENT.get(path[didx + 1:], content_type)
+    return content_type
 
 
 class StaticHandler(tornado.web.StaticFileHandler):
@@ -31,6 +31,39 @@ class StaticHandler(tornado.web.StaticFileHandler):
         # self.set_header("X-Frame-Options", "deny")
         self.set_header("X-XSS-Protection", "1; mode=block")
         self.set_header("X-Content-Type-Options", "nosniff")
+
+
+class XNStaticHandler(StaticHandler):
+
+    @staticmethod
+    def _get_mime_type(path):
+        """ allows users to define mime type or returns fallback """
+        try:
+            content_type = None
+            if not path or path == "/":
+                logger.debug("XNStaticHandler is using path fallback")
+                path = 'xn_mime_fallback'
+            content_type_path = cfg.DIR['xnjeacc'].joinpath(f'{path}-type')
+            if content_type_path.exists():
+                with content_type_path.open() as fhandle:
+                    _ext = fhandle.read().strip()
+                content_type = cfg.CONTENT.get(_ext)
+            if content_type is None:  # invalid value found or file not found at all
+                content_type = cfg.CONTENT['fallback']
+                logger.debug(f"Using fallback mime type of {content_type} for {path}")
+        except Exception:
+            logger.exception("Failed to get mime type")
+        finally:
+            return content_type
+
+    def set_extra_headers(self, path):
+        self.set_header("Content-Type", XNStaticHandler._get_mime_type(path))
+        self.set_header("Cache-Control", "no-cache,no-store,must-revalidate")
+
+    def parse_url_path(self, url_path):
+        if not url_path or url_path == "/":
+            url_path = 'xn_type_fallback'
+        return cfg.DIR['xnjeacc'].joinpath(url_path)
 
 
 class BaseHandler(tornado.web.RequestHandler):
@@ -93,7 +126,7 @@ def main():
                 (r"/portfolio/?(.*)?", PortfolioHandler),
                 (r"/about-me/?", AboutMeHandler),
                 (r"/static/(.*)", StaticHandler),
-                (r"/xn--jea.cc/(.*)", StaticHandler, {"path": cfg.DIR['xnjeacc']}),
+                (r"/xn--jea.cc/(.*)", XNStaticHandler, {"path": cfg.DIR['xnjeacc']}),
                 (r"/public/(.*)", StaticHandler, {"path": cfg.DIR['public']})]
     logger.info("Starting main IO loop at {}:{}".format(cfg.ADDRESS, cfg.PORT))
     _app = tornado.web.Application(handlers, **cfg.SETTINGS)
